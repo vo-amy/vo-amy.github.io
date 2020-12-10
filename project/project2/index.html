@@ -60,7 +60,7 @@
  
 <div class="blog-title">
           <h4>
-         January 1, 0001 
+         November 20, 2020 
             &nbsp;&nbsp;
             
           </h4>
@@ -1552,10 +1552,10 @@ for(i in 1:5000) {
 
 #calculating the p-value 
 mean(rand_dist&gt;33479.96 | rand_dist &lt; -33479.96)</code></pre>
-<pre><code>## [1] 0.1872</code></pre>
+<pre><code>## [1] 0.1936</code></pre>
 <pre class="r"><code>#histogram of the null distribution &amp; test statistic 
 {hist(rand_dist,main=&quot;Null Distribution&quot;,ylab=&quot;Probability Density/Density&quot;); abline(v = c(-33479.96, 33479.96),col=&quot;red&quot;)}</code></pre>
-<p><img src="../../project/project_2_files/figure-html/unnamed-chunk-8-1.png" width="672" /> Part 3</p>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-8-1.png" width="672" /> Part 3</p>
 <p>Linear Regression Model</p>
 <p>The null hypothesis would be that the number of non-graduates who are employed does not explain variation in the number of graduates who get employed and whether they are STEM or NON-STEM majors does not explain variation in the number of graduates who get employed either; the interaction between whether they are a STEM major or NON-STEM major with the number of non-graduates who are employed is not significant either.</p>
 <p>The alternative hypothesis would be that the number of non-graduates who are employed DOES explain variation in the number of graduates who get employed and whether they are STEM or NON-STEM majors DOES explain variation in the number of graduates who get employed; the interaction between whether they are a STEM major or NON-STEM major with the number of non-graduates who are employed IS significant.</p>
@@ -1594,16 +1594,16 @@ summary(fit)</code></pre>
 <pre class="r"><code>#plotting the regression using ggplot
 cgs %&gt;% ggplot(aes(nongrad_employed_c, grad_employed, color= is_STEM))+geom_point()+geom_smooth(method = &#39;lm&#39;) + xlab(&quot;Non-Graduate Students Employed&quot;) + ylab(&quot;Graduate Students Employed&quot;) +theme_dark() + ggtitle(&quot;Linear Regression Graph&quot;)</code></pre>
 <pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
-<p><img src="../../project/project_2_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <pre class="r"><code>#Checking Assumptions- Homoskesaticity 
 resids&lt;-fit$residuals
 fitvals&lt;-fit$fitted.values
 ggplot()+geom_point(aes(fitvals,resids))+geom_hline(yintercept=0, color=&#39;red&#39;)</code></pre>
-<p><img src="../../project/project_2_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
 <pre class="r"><code>#Checking Asumptions - Normality of Residuals 
 ggplot()+geom_histogram(aes(resids))</code></pre>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="../../project/project_2_files/figure-html/unnamed-chunk-9-3.png" width="672" /></p>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-9-3.png" width="672" /></p>
 <pre class="r"><code>shapiro.test(resids) </code></pre>
 <pre><code>## 
 ##  Shapiro-Wilk normality test
@@ -1612,7 +1612,7 @@ ggplot()+geom_histogram(aes(resids))</code></pre>
 ## W = 0.64461, p-value &lt; 2.2e-16</code></pre>
 <pre class="r"><code>#Checking Assumptions - Linearity 
 qqnorm(resids); qqline(resids, col=&#39;red&#39;)</code></pre>
-<p><img src="../../project/project_2_files/figure-html/unnamed-chunk-9-4.png" width="672" /></p>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-9-4.png" width="672" /></p>
 <pre class="r"><code>#Recompute regression results with robust standard errors
 library(sandwich); library(lmtest)</code></pre>
 <pre><code>## Loading required package: zoo</code></pre>
@@ -1677,7 +1677,7 @@ coef(fit)
 #resampling the residuals 
 resid_resamp%&gt;%t%&gt;%as.data.frame%&gt;%summarize_all(sd) #bootstrapped standard errors </code></pre>
 <pre><code>##   (Intercept) nongrad_employed_c is_STEMTRUE nongrad_employed_c:is_STEMTRUE
-## 1    11170.41         0.02804286    14449.42                     0.05445237</code></pre>
+## 1    11034.91         0.02864972    14312.92                     0.05499571</code></pre>
 <pre class="r"><code>#resid_resamp %&gt;% t %&gt;% as.data.frame %&gt;% summarize(lower = quantile(x, 0.025), upper = quantile(x, 0.975)) - I am coding this out because it kept giving me an error when I was knitting!</code></pre>
 <p>Part 5: Logistic Regression In creating a binary variable, we are coding the number 1 for &quot;TRUE&quot; for the is_STEM variable, and number 0 for &quot;FALSE&quot; for is_STEM variable and putting these under a new column called &quot;STEM_STATUS.&quot; The predictor variable/dependent variable is going to be our STEM_STATUS variable (whether the students are STEM majors or NON-STEM majors), and our explanatory variables are going to be grad_employed_fulltime_yearround (number of graduate students who are employed fulltime around the year) and grad_median (median earnings of the graduate students who work fulltime).</p>
 <p>Logistic Regression Model Output: Controlling for grad_median (median earnings of fulltime employed graduate students), for every 1 graduate student fulltime employee increase, odds of being a stem major change/multiplied by a factor of e<sup>-2.704e</sup>-06 = 0.993 (0.7% decrease in odds) (grad_employed_fulltime_yearround coefficient). This result is not significant (p=0.0712). Controlling for grad_employed_fulltime_yearround, for every 1 dollar increase in the graduate median earnings, odds of being a stem major change by a factor of e^7.5247e-05 = 1.052 (5.2% increase in odds) (significant because p-value = 4.832e-08). For grad_median = 0 and for grad_employed_fulltime_yearround = 0, the log-odds of being a stem major is -4.9819e^-09, and the odds of being a stem major is e^(-4.9819) = 0.00686 (significant due to p value = 5.745e^-07). The predicted probability of being a STEM major of grad_median = 0 and grad_employed_fulltime_yearround = 0 is 0.0068133.</p>
@@ -1750,7 +1750,7 @@ table(predict = as.numeric(cgsnew$prob &gt; 0.5 ), truth = cgsnew$STEM_STATUS)%&
 ROCplot &lt;- ggplot(cgsnew) + geom_roc(aes(d = STEM_STATUS, 
     m = prob), n.cuts = 0)
 ROCplot</code></pre>
-<p><img src="../../project/project_2_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <pre class="r"><code>calc_auc(ROCplot) #calculating AUC</code></pre>
 <pre><code>##   PANEL group       AUC
 ## 1     1    -1 0.7949661</code></pre>
@@ -1760,7 +1760,7 @@ cgsnew$logit&lt;-predict(fit1,type=&quot;link&quot;)
 cgsnew%&gt;%ggplot()+geom_density(aes(logit,color=is_STEM,fill=is_STEM), alpha=.5)+
   theme(legend.position=c(.75,.75))+geom_vline(xintercept=0)+xlab(&quot;logit (log-odds)&quot;)+
   geom_rug(aes(logit,color=is_STEM)) + ggtitle(&quot;Density Plot of Log-Odds&quot;)</code></pre>
-<p><img src="../../project/project_2_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
 <p>Part 6: Perform a logistic regression predicting the same binary response variable from ALL of the rest of your variables</p>
 <p>The accuracy in predicitng our STEM_status variable is 0.78488 from grad_employed_fulltime_yearround, grad_median, grad_employed, nongrad_employed, nongrad_employed_fulltime_yearround, nongrad_median, grad_total, and nongrad_total. The sensitivity is 0.86538, the true positive rate of our data. The specificity is 0.661765, the true negative rate of our data. The precision is 0.79646, the proprotion of classified STEM majors who are actually STEM majors. The AUC is 0.8632636, which is a fairly decent AUC. The AUC is an indicator on how well we can predict STEM status majors from these explanatory variables mentioned above.</p>
 <pre class="r"><code>fit2&lt;-glm(STEM_STATUS~grad_employed_fulltime_yearround + grad_median + grad_employed + nongrad_employed +nongrad_employed_fulltime_yearround +nongrad_median +grad_total + nongrad_total ,data=cgsnew,family=binomial(link=&quot;logit&quot;))
@@ -1814,7 +1814,7 @@ table(predict = as.numeric(cgsnew$prob2 &gt; 0.5 ), truth = cgsnew$STEM_STATUS)%
 ROCplot2 &lt;- ggplot(cgsnew) + geom_roc(aes(d = STEM_STATUS, 
     m = prob2), n.cuts = 0)
 ROCplot</code></pre>
-<p><img src="../../project/project_2_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <pre class="r"><code>calc_auc(ROCplot2)</code></pre>
 <pre><code>##   PANEL group       AUC
 ## 1     1    -1 0.8632636</code></pre>
