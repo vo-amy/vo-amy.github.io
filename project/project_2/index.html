@@ -1,0 +1,1998 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Amy Vo" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="../../img/favicon.ico">
+    <title>project_2</title>
+    <meta name="generator" content="Hugo 0.79.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../../css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="../../"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="../../post/">BLOG</a></li>
+        
+        <li><a href="../../projects/">PROJECTS</a></li>
+        
+        <li><a href="../../resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="../../project/project_2/">project_2</a></strong>
+          </h3>
+        </div>
+ 
+<div class="blog-title">
+          <h4>
+         January 1, 0001 
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="r-markdown" class="section level2">
+<h2>R Markdown</h2>
+</div>
+<div id="amy-vo-ut-eid-amv3428" class="section level1">
+<h1>Amy Vo UT EID; amv3428</h1>
+<pre class="r"><code># Downloading necessary libraries
+library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
+## ✓ tibble  3.0.3     ✓ stringr 1.4.0
+## ✓ tidyr   1.1.1     ✓ forcats 0.5.0
+## ✓ readr   1.3.1</code></pre>
+<pre><code>## ── Conflicts ──────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(ggplot2)</code></pre>
+<p>The dataset that I am using contains information about college graduate and nongraduate students and their employment status based on their major. After tidying up the dataset, it has 11 variables and 172 observations. The major variable contains a variety of majors chosen by students. The major_category variable contains the categories that each major belongs to. The grad_total variable is the total number of graduate students with each major. The grad_employed variable is the number of graduate students who are employed. The grad_employed_fulltime_yearround variable is the number of graduate students are are employed full-time. The grad_unemployed variable is the number of graduate students who are unemployed. The nongrad_total variable is the total number of nongraduate students. The nongrad_employed variable is the number of nongraduate students who are employed. The nongrad_employed_fulltime_yearround variable is the number of nongraduate students employed full-time. The nongrad_unemployed variable is the number of nongraduate students who are unemployed. The is_STEM variable is a binaray variable that indicates whether a paricular major is a STEM major or not. The grad_median variable is the median earnings of graduate students who work full time year round. The nongrad_median variable is the median earnings of non-graduate students who work full time year round. The grad_total is the total number of students with a major, and the non-grad total is the total number of non-graduate students with a defined major.</p>
+<pre class="r"><code># Tidying up the college_grad_students dataset
+# Putting the dataset into a variable that&#39;s easier to use
+library(&quot;fivethirtyeight&quot;)
+install.packages(&quot;fivethirtyeight&quot;, repos = &quot;http://cran.us.r-project.org&quot;)</code></pre>
+<pre><code>## Installing package into &#39;/stor/home/amv3428/R/x86_64-pc-linux-gnu-library/3.6&#39;
+## (as &#39;lib&#39; is unspecified)</code></pre>
+<pre class="r"><code>cgs &lt;- college_grad_students
+
+# Removing unnecessary columns from the dataset
+cgs &lt;- subset(cgs, select = -c(major_code, grad_sample_size, grad_p25th, grad_p75th, nongrad_p25th, nongrad_p75th, grad_share, grad_premium, grad_unemployment_rate, nongrad_unemployment_rate))
+
+# Creating a binomial categorical variable based of whether a major is STEM or not
+cgs &lt;- cgs %&gt;% mutate(is_STEM = ifelse(((major_category == &quot;Agriculture &amp; Natural Resources&quot;) | (major_category == &quot;Biology &amp; Life Science&quot;) | (major_category == &quot;Computers &amp; Mathematics&quot;) | (major_category == &quot;Engineering&quot;) | (major_category == &quot;Health&quot;) | (major_category == &quot;Physical Sciences&quot;) | (major_category == &quot;Psychology &amp; Social Work&quot;) | (major_category == &quot;Social Science&quot;)), TRUE, FALSE))
+
+# Rearranging the columns
+cgs &lt;- cgs %&gt;% relocate(grad_unemployed, .after = grad_employed) %&gt;% relocate(nongrad_employed, .after = grad_unemployed) %&gt;% relocate(nongrad_unemployed, .after = nongrad_employed)
+cgs &lt;- cgs[-c(41), ]
+
+# Showing the new college_grad_students dataframe
+glimpse(cgs)</code></pre>
+<pre><code>## Rows: 172
+## Columns: 13
+## $ major                               &lt;chr&gt; &quot;Construction Services&quot;, &quot;Commerc…
+## $ major_category                      &lt;chr&gt; &quot;Industrial Arts &amp; Consumer Servi…
+## $ grad_total                          &lt;int&gt; 9173, 53864, 24417, 5411, 9109, 1…
+## $ grad_employed                       &lt;int&gt; 7098, 40492, 18368, 3590, 7512, 1…
+## $ grad_unemployed                     &lt;int&gt; 681, 2482, 1465, 316, 466, 0, 832…
+## $ nongrad_employed                    &lt;int&gt; 73607, 347166, 145597, 29738, 431…
+## $ nongrad_unemployed                  &lt;int&gt; 3928, 25484, 7409, 1661, 3389, 51…
+## $ grad_employed_fulltime_yearround    &lt;int&gt; 6511, 29553, 14784, 2701, 5622, 8…
+## $ grad_median                         &lt;dbl&gt; 75000, 60000, 65000, 47000, 57000…
+## $ nongrad_total                       &lt;int&gt; 86062, 461977, 179335, 37575, 538…
+## $ nongrad_employed_fulltime_yearround &lt;int&gt; 62435, 250596, 113579, 23249, 342…
+## $ nongrad_median                      &lt;dbl&gt; 65000, 48000, 50000, 41600, 52000…
+## $ is_STEM                             &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, TRUE,…</code></pre>
+<p>The multivariate normality assumption is hard to eyeball, but we can still test whether there is homogenity of the covariance matrices as one of the assumptions for the MANOVA testing! We are also going to assume that this data has met the random sample and independent observations assumptions, the linear relationships among dependent variables, no extreme univariate or multivariate outliers, and no multicollinearity. One of the assumptions for MANOVA is the homogeniety of the covariance matrices, and after performing a variance-covariance matrix here for the major categories of the students we can see that there are distinct differences between the graduate employment, graduate umemployment, non-graduate unemployment, and non-graduate employment numbers upon our sample. Our response variables here are the numeric variables: the number of graduate emplyoment, graduate unemplyoment, non-graduate emplyoment, and non-graduate unemployment, grad_median (median earnings for graduate students), and non_grad median (the median earnings for non-graduate students). While our explanatory variable here is going to be the major categories of the students. We are testing whether there is a signficant mean difference in the the number of graduate emplyoment, graduate unemplyoment, non-graduate emplyoment, and non-graduate unemployment in the varying major categories. The graduates are the students in graduate school, and the non-graduates are the students who are not in graduate school (undergrad).</p>
+<p>In running the MANOVA assumptions to test for multivariate normality, since the p-value is smaller than 0.05 for every case in the output, we do NOT MEET THE MULTIVARIATE NORMALITY assumption since we reject the null hypothesis. In testing for the homogenity of the covariances, we also do NOT meet the homogeniety of the covariances seen in the varaince-covariance matrix and by the Box's M test (p value is less then 0.05, meaning we reject the null hypothesis). ***Note: I took out the nongrad_unemployed for the multivariate normality assumption test because it was giving my code an error that I could not bypass so I temporarily filtered it out for now and will continue to input it into the dataset later in the next step.</p>
+<pre class="r"><code>#MANOVA Assumptions
+# Testing the covarience using variance-covariance matrix
+covmats&lt;-cgs%&gt;%group_by(major_category)%&gt;%do(covs=cov(.[4:7]))
+for(i in 1:15){print(as.character(covmats$major_category[i])); print(covmats$covs[[i]])}</code></pre>
+<pre><code>## [1] &quot;Agriculture &amp; Natural Resources&quot;
+##                    grad_employed grad_unemployed nongrad_employed
+## grad_employed          185254040      2563774.50        327445643
+## grad_unemployed          2563774        74669.17          6933318
+## nongrad_employed       327445643      6933317.72        908554303
+## nongrad_unemployed      13021379       249833.50         29664004
+##                    nongrad_unemployed
+## grad_employed              13021378.6
+## grad_unemployed              249833.5
+## nongrad_employed           29664003.7
+## nongrad_unemployed          1284566.5
+## [1] &quot;Arts&quot;
+##                    grad_employed grad_unemployed nongrad_employed
+## grad_employed         3001283250       149155703       4575094955
+## grad_unemployed        149155703         8230137        283545735
+## nongrad_employed      4575094955       283545735      18940133483
+## nongrad_unemployed     257738343        17794639       1311719047
+##                    nongrad_unemployed
+## grad_employed               257738343
+## grad_unemployed              17794639
+## nongrad_employed           1311719047
+## nongrad_unemployed           93659611
+## [1] &quot;Biology &amp; Life Science&quot;
+##                    grad_employed grad_unemployed nongrad_employed
+## grad_employed        54095870450      1156784859      30453582392
+## grad_unemployed       1156784859        24795046        653252551
+## nongrad_employed     30453582392       653252551      17467455323
+## nongrad_unemployed    1711922657        36703789        978786570
+##                    nongrad_unemployed
+## grad_employed              1711922657
+## grad_unemployed              36703789
+## nongrad_employed            978786570
+## nongrad_unemployed           54901955
+## [1] &quot;Business&quot;
+##                    grad_employed grad_unemployed nongrad_employed
+## grad_employed        45500265395      2141172593     150538450921
+## grad_unemployed       2141172593       102220076       7189789338
+## nongrad_employed    150538450921      7189789338     518140037953
+## nongrad_unemployed    8587480858       414317789      29847899267
+##                    nongrad_unemployed
+## grad_employed              8587480858
+## grad_unemployed             414317789
+## nongrad_employed          29847899267
+## nongrad_unemployed         1734909814
+## [1] &quot;Communications &amp; Journalism&quot;
+##                    grad_employed grad_unemployed nongrad_employed
+## grad_employed         7203467535       378135808      23071991820
+## grad_unemployed        378135808        19992035       1217085950
+## nongrad_employed     23071991820      1217085950      74380470855
+## nongrad_unemployed    1437089740        76280661       4650135526
+##                    nongrad_unemployed
+## grad_employed              1437089740
+## grad_unemployed              76280661
+## nongrad_employed           4650135526
+## nongrad_unemployed          292305948
+## [1] &quot;Computers &amp; Mathematics&quot;
+##                    grad_employed grad_unemployed nongrad_employed
+## grad_employed        11990521233       452397195      17970866722
+## grad_unemployed        452397195        17106000        671597066
+## nongrad_employed     17970866722       671597066      35022171906
+## nongrad_unemployed     898577508        33590101       1728216080
+##                    nongrad_unemployed
+## grad_employed               898577508
+## grad_unemployed              33590101
+## nongrad_employed           1728216080
+## nongrad_unemployed           85540035
+## [1] &quot;Education&quot;
+##                    grad_employed grad_unemployed nongrad_employed
+## grad_employed        44793217917      1257754853      51976543636
+## grad_unemployed       1257754853        38415799       1467204837
+## nongrad_employed     51976543636      1467204837      60956106428
+## nongrad_unemployed    2112490442        61126335       2478459594
+##                    nongrad_unemployed
+## grad_employed              2112490442
+## grad_unemployed              61126335
+## nongrad_employed           2478459594
+## nongrad_unemployed          101642834
+## [1] &quot;Engineering&quot;
+##                    grad_employed grad_unemployed nongrad_employed
+## grad_employed         7968906494       304527945      11040454916
+## grad_unemployed        304527945        12407070        428011960
+## nongrad_employed     11040454916       428011960      15980464748
+## nongrad_unemployed     551688752        22650443        810809759
+##                    nongrad_unemployed
+## grad_employed               551688752
+## grad_unemployed              22650443
+## nongrad_employed            810809759
+## nongrad_unemployed           43960711
+## [1] &quot;Health&quot;
+##                    grad_employed grad_unemployed nongrad_employed
+## grad_employed        13466704548       276481737      37567022022
+## grad_unemployed        276481737         5931038        806745244
+## nongrad_employed     37567022022       806745244     119082174040
+## nongrad_unemployed     926110864        20154210       2971320789
+##                    nongrad_unemployed
+## grad_employed               926110864
+## grad_unemployed              20154210
+## nongrad_employed           2971320789
+## nongrad_unemployed           74722182
+## [1] &quot;Humanities &amp; Liberal Arts&quot;
+##                    grad_employed grad_unemployed nongrad_employed
+## grad_employed        29336596273      1204387176      30381764809
+## grad_unemployed       1204387176        49667132       1252770053
+## nongrad_employed     30381764809      1252770053      35478049298
+## nongrad_unemployed    2072915669        85921885       2425787509
+##                    nongrad_unemployed
+## grad_employed              2072915669
+## grad_unemployed              85921885
+## nongrad_employed           2425787509
+## nongrad_unemployed          167519967
+## [1] &quot;Industrial Arts &amp; Consumer Services&quot;
+##                    grad_employed grad_unemployed nongrad_employed
+## grad_employed         2230071115        66191167       4573538083
+## grad_unemployed         66191167         2121697        136636769
+## nongrad_employed      4573538083       136636769       9890951022
+## nongrad_unemployed     221526060         6905328        474931186
+##                    nongrad_unemployed
+## grad_employed               221526060
+## grad_unemployed               6905328
+## nongrad_employed            474931186
+## nongrad_unemployed           23433157
+## [1] &quot;Law &amp; Public Policy&quot;
+##                    grad_employed grad_unemployed nongrad_employed
+## grad_employed         3864214677       165018218      14941564960
+## grad_unemployed        165018218         7144877        630484703
+## nongrad_employed     14941564960       630484703      58833323165
+## nongrad_unemployed     759738811        32107385       2983002144
+##                    nongrad_unemployed
+## grad_employed               759738811
+## grad_unemployed              32107385
+## nongrad_employed           2983002144
+## nongrad_unemployed          151494317
+## [1] &quot;Physical Sciences&quot;
+##                    grad_employed grad_unemployed nongrad_employed
+## grad_employed        12631878350       399506730       8303661750
+## grad_unemployed        399506730        12752231        250848270
+## nongrad_employed      8303661750       250848270       9412911704
+## nongrad_unemployed     439782054        13340647        454529938
+##                    nongrad_unemployed
+## grad_employed               439782054
+## grad_unemployed              13340647
+## nongrad_employed            454529938
+## nongrad_unemployed           22451319
+## [1] &quot;Psychology &amp; Social Work&quot;
+##                    grad_employed grad_unemployed nongrad_employed
+## grad_employed        88448605880      3444797186      90882704673
+## grad_unemployed       3444797186       134221442       3542748334
+## nongrad_employed     90882704673      3542748334      93655679004
+## nongrad_unemployed    6214084228       242273883       6405665636
+##                    nongrad_unemployed
+## grad_employed              6214084228
+## grad_unemployed             242273883
+## nongrad_employed           6405665636
+## nongrad_unemployed          438639569
+## [1] &quot;Social Science&quot;
+##                    grad_employed grad_unemployed nongrad_employed
+## grad_employed        39044158471      1622569656      39756227639
+## grad_unemployed       1622569656        67890566       1679016645
+## nongrad_employed     39756227639      1679016645      44650044447
+## nongrad_unemployed    2556740360       107396704       2849712659
+##                    nongrad_unemployed
+## grad_employed              2556740360
+## grad_unemployed             107396704
+## nongrad_employed           2849712659
+## nongrad_unemployed          183298949</code></pre>
+<pre class="r"><code>library(rstatix)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;rstatix&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter</code></pre>
+<pre class="r"><code>group &lt;- cgs$major_category
+DVs &lt;- cgs %&gt;% select(grad_employed, grad_unemployed, nongrad_employed) #taking/filtering out the nongrad_unemployed variable for this assumption step because code would not run with it in! 
+#Test multivariate normality for each group (null: assumption met)
+sapply(split(DVs,group), mshapiro_test)</code></pre>
+<pre><code>##           Agriculture &amp; Natural Resources Arts         Biology &amp; Life Science
+## statistic 0.6287392                       0.660709     0.3823056             
+## p.value   0.000121956                     0.0008034542 8.071398e-07          
+##           Business     Communications &amp; Journalism Computers &amp; Mathematics
+## statistic 0.6676603    0.6297763                   0.5137422              
+## p.value   0.0002684382 0.001240726                 2.222424e-06           
+##           Education    Engineering  Health     Humanities &amp; Liberal Arts
+## statistic 0.466341     0.5045226    0.447381   0.6342881                
+## p.value   1.129858e-06 8.695099e-09 7.4213e-06 5.351441e-05             
+##           Industrial Arts &amp; Consumer Services Law &amp; Public Policy
+## statistic 0.545772                            0.5970906          
+## p.value   6.099645e-05                        0.0005728262       
+##           Physical Sciences Psychology &amp; Social Work Social Science
+## statistic 0.5059315         0.5267605                0.5726271     
+## p.value   4.268637e-06      1.319723e-05             4.565021e-05</code></pre>
+<pre class="r"><code>#Box&#39;s M test (null: assumption met)
+box_m(DVs, group)</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   statistic   p.value parameter method                                          
+##       &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;                                           
+## 1      753. 3.93e-108        84 Box&#39;s M-test for Homogeneity of Covariance Matr…</code></pre>
+<p>The null hypothesis is that for all of the dependant/response variables (Grad Employed, Grad Unemployed, Nongrad Employed, and Nongrad Unemployed), the means for each between the different major categories are equal and NOT signficantly different. Since the p-value for the MANOVA test is 3.662e-08, which is smaller than p = 0.05, we can REJECT the null hypothesis. This means that there is a significant difference of means for at least one of the dependent variables between the major categories. This ultimately means that being in a particular major category can impact your employment/unemployment rate and also whether you are a graduate or non-graduate who is employed or unemployed.</p>
+<pre class="r"><code># Performing the MANOVA test
+man1 &lt;- manova(cbind(grad_employed, grad_unemployed, nongrad_employed, nongrad_unemployed)~major_category, data = cgs)
+summary(man1)</code></pre>
+<pre><code>##                 Df  Pillai approx F num Df den Df    Pr(&gt;F)    
+## major_category  14 0.73398   2.5202     56    628 3.662e-08 ***
+## Residuals      157                                             
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>For Non-Graduates who are employed and Non-Graduates who are unemployed, the ANOVA test states that there is a mean difference based on their major category. For graduates employed and unemployed, there is not a mean difference based on their major category. This means that the total number of employed and unemployed non-graduate students is influenced by their major categories. This means that there is a significant difference in the mean employment/unemployment rate based on the people's majors.</p>
+<pre class="r"><code>#Performing Univariate ANOVA&#39;s 
+summary.aov(man1)</code></pre>
+<pre><code>##  Response grad_employed :
+##                 Df     Sum Sq    Mean Sq F value Pr(&gt;F)
+## major_category  14 3.5158e+11 2.5113e+10  0.9784 0.4779
+## Residuals      157 4.0298e+12 2.5667e+10               
+## 
+##  Response grad_unemployed :
+##                 Df     Sum Sq  Mean Sq F value Pr(&gt;F)
+## major_category  14  701290147 50092153  1.4851 0.1222
+## Residuals      157 5295487671 33729221               
+## 
+##  Response nongrad_employed :
+##                 Df     Sum Sq    Mean Sq F value   Pr(&gt;F)   
+## major_category  14 2.6437e+12 1.8884e+11  2.5097 0.002989 **
+## Residuals      157 1.1813e+13 7.5243e+10                    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response nongrad_unemployed :
+##                 Df     Sum Sq   Mean Sq F value    Pr(&gt;F)    
+## major_category  14 8.9667e+09 640477178  2.8104 0.0009036 ***
+## Residuals      157 3.5779e+10 227892051                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Performing the post-hoc t tests before the Bonferroni adjustment, we can see which means differ within the groups.</p>
+<p>For graduate students who are employed, there is a significant mean difference in the employment rate between people who are Business majors &amp; Agriculture &amp; Natural Resources (p=0.032), between people who are Education majors &amp; Agricultural &amp; Natural Resources majors (p=0.039), and between people who are Engineering majors and Business majors (p=0.047).</p>
+<p>For graduate students who are unemployed, there are significant differences between the mean numbers of unemployed people between people who are Business Majors vs people who are Agriculture &amp; Natural Resources Majors (p=0.0031), between Humanities &amp; Liberal Arts majors vs Agricultural &amp; Natural Resources majors (p=0.0307), between Social Science majors vs Agricultural &amp; Natural Resources Arts majors (p=0.0209), between Business majors vs Biology &amp; Life Science majors (p=0.0140), between Business Majors vs Computers &amp; Mathematics majors (p=0.0302), between Business majors vs Engineering Majors (p=0.0044), between Business majors vs Health majors (p=0.0156), between Industrial Arts &amp; Consumer Services majors vs Business majors (p=0.0171), between Physical Science majors vs Business majors (p=0.0273), and between Engineering majors vs Social Science majors (p=0.0448).</p>
+<p>For Non-Graduate students who are employed, there are significant differences between the mean number of people employed between Agricultural &amp; Natural Resources majors vs Business majors, between Art majors vs Business majors, between Business majors vs Biology &amp; Life Sciences majors, between Computers &amp; Mathematics majors vs Business majors, between Business majors vs Education majors, between Business majors vs Engineering majors, between Business majors vs Health majors, between Business majors vs Humanities &amp; Liberal Arts majors, between Business majors vs Industrial Arts &amp; Consumer Services majors, between Business majors vs Law &amp; Public Policy majors, between Business majors vs Physical Sciences majors, between Business majors vs Psychology &amp; Social Work majors, and between Social Science majors vs Business majors. The p-valuesfor all of these comparisons are below p=0.05.</p>
+<p>For Non-Graduate students who are unemployed, there is a significant difference in mean unemployment numbers between Business majors vs Agricultures &amp; Natural Resources majors, between Business majors vs Arts majors, between Business majors vs Biology &amp; Life Science majors, between Communications &amp; Journalism majors vs Biology &amp; Life Science majors, between Business majors vs Computers &amp; Mathematics majors, between Business majors vs Education majors, between Business majors vs Engineering majors, between Business majors vs Health majors, between Business majors vs Hunamnities &amp; Liberal Arts majors, between Business majors vs Industrial Arts &amp; Consumer Services majors, between Business majors vs Law &amp; Public Policy majors, between Business majors vs Physical Sciences majors, between Business majors vs Psychology &amp; Social Work majors, and between Business majors vs Social Science majors. The p-values for all of these comparisons are below p=0.05.</p>
+<pre class="r"><code># Performing the post-hoc t tests
+pairwise.t.test(cgs$grad_employed, cgs$major_category, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  cgs$grad_employed and cgs$major_category 
+## 
+##                                     Agriculture &amp; Natural Resources Arts 
+## Arts                                0.647                           -    
+## Biology &amp; Life Science              0.232                           0.530
+## Business                            0.032                           0.126
+## Communications &amp; Journalism         0.435                           0.689
+## Computers &amp; Mathematics             0.501                           0.869
+## Education                           0.039                           0.153
+## Engineering                         0.514                           0.956
+## Health                              0.258                           0.558
+## Humanities &amp; Liberal Arts           0.082                           0.258
+## Industrial Arts &amp; Consumer Services 0.837                           0.823
+## Law &amp; Public Policy                 0.758                           0.932
+## Physical Sciences                   0.411                           0.750
+## Psychology &amp; Social Work            0.100                           0.267
+## Social Science                      0.067                           0.198
+##                                     Biology &amp; Life Science Business
+## Arts                                -                      -       
+## Biology &amp; Life Science              -                      -       
+## Business                            0.287                  -       
+## Communications &amp; Journalism         0.952                  0.437   
+## Computers &amp; Mathematics             0.617                  0.136   
+## Education                           0.351                  0.853   
+## Engineering                         0.431                  0.047   
+## Health                              0.977                  0.293   
+## Humanities &amp; Liberal Arts           0.558                  0.611   
+## Industrial Arts &amp; Consumer Services 0.394                  0.087   
+## Law &amp; Public Policy                 0.530                  0.162   
+## Physical Sciences                   0.758                  0.202   
+## Psychology &amp; Social Work            0.540                  0.732   
+## Social Science                      0.415                  0.887   
+##                                     Communications &amp; Journalism
+## Arts                                -                          
+## Biology &amp; Life Science              -                          
+## Business                            -                          
+## Communications &amp; Journalism         -                          
+## Computers &amp; Mathematics             0.774                      
+## Education                           0.502                      
+## Engineering                         0.676                      
+## Health                              0.969                      
+## Humanities &amp; Liberal Arts           0.655                      
+## Industrial Arts &amp; Consumer Services 0.565                      
+## Law &amp; Public Policy                 0.662                      
+## Physical Sciences                   0.874                      
+## Psychology &amp; Social Work            0.623                      
+## Social Science                      0.524                      
+##                                     Computers &amp; Mathematics Education
+## Arts                                -                       -        
+## Biology &amp; Life Science              -                       -        
+## Business                            -                       -        
+## Communications &amp; Journalism         -                       -        
+## Computers &amp; Mathematics             -                       -        
+## Education                           0.167                   -        
+## Engineering                         0.877                   0.056    
+## Health                              0.648                   0.356    
+## Humanities &amp; Liberal Arts           0.292                   0.730    
+## Industrial Arts &amp; Consumer Services 0.690                   0.106    
+## Law &amp; Public Policy                 0.816                   0.193    
+## Physical Sciences                   0.865                   0.245    
+## Psychology &amp; Social Work            0.303                   0.848    
+## Social Science                      0.222                   0.986    
+##                                     Engineering Health
+## Arts                                -           -     
+## Biology &amp; Life Science              -           -     
+## Business                            -           -     
+## Communications &amp; Journalism         -           -     
+## Computers &amp; Mathematics             -           -     
+## Education                           -           -     
+## Engineering                         -           -     
+## Health                              0.475       -     
+## Humanities &amp; Liberal Arts           0.137       0.555 
+## Industrial Arts &amp; Consumer Services 0.743       0.420 
+## Law &amp; Public Policy                 0.883       0.552 
+## Physical Sciences                   0.725       0.786 
+## Psychology &amp; Social Work            0.176       0.536 
+## Social Science                      0.114       0.415 
+##                                     Humanities &amp; Liberal Arts
+## Arts                                -                        
+## Biology &amp; Life Science              -                        
+## Business                            -                        
+## Communications &amp; Journalism         -                        
+## Computers &amp; Mathematics             -                        
+## Education                           -                        
+## Engineering                         -                        
+## Health                              -                        
+## Humanities &amp; Liberal Arts           -                        
+## Industrial Arts &amp; Consumer Services 0.182                    
+## Law &amp; Public Policy                 0.292                    
+## Physical Sciences                   0.398                    
+## Psychology &amp; Social Work            0.916                    
+## Social Science                      0.756                    
+##                                     Industrial Arts &amp; Consumer Services
+## Arts                                -                                  
+## Biology &amp; Life Science              -                                  
+## Business                            -                                  
+## Communications &amp; Journalism         -                                  
+## Computers &amp; Mathematics             -                                  
+## Education                           -                                  
+## Engineering                         -                                  
+## Health                              -                                  
+## Humanities &amp; Liberal Arts           -                                  
+## Industrial Arts &amp; Consumer Services -                                  
+## Law &amp; Public Policy                 0.909                              
+## Physical Sciences                   0.588                              
+## Psychology &amp; Social Work            0.194                              
+## Social Science                      0.141                              
+##                                     Law &amp; Public Policy Physical Sciences
+## Arts                                -                   -                
+## Biology &amp; Life Science              -                   -                
+## Business                            -                   -                
+## Communications &amp; Journalism         -                   -                
+## Computers &amp; Mathematics             -                   -                
+## Education                           -                   -                
+## Engineering                         -                   -                
+## Health                              -                   -                
+## Humanities &amp; Liberal Arts           -                   -                
+## Industrial Arts &amp; Consumer Services -                   -                
+## Law &amp; Public Policy                 -                   -                
+## Physical Sciences                   0.715               -                
+## Psychology &amp; Social Work            0.291               0.397            
+## Social Science                      0.226               0.300            
+##                                     Psychology &amp; Social Work
+## Arts                                -                       
+## Biology &amp; Life Science              -                       
+## Business                            -                       
+## Communications &amp; Journalism         -                       
+## Computers &amp; Mathematics             -                       
+## Education                           -                       
+## Engineering                         -                       
+## Health                              -                       
+## Humanities &amp; Liberal Arts           -                       
+## Industrial Arts &amp; Consumer Services -                       
+## Law &amp; Public Policy                 -                       
+## Physical Sciences                   -                       
+## Psychology &amp; Social Work            -                       
+## Social Science                      0.854                   
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(cgs$grad_unemployed, cgs$major_category, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  cgs$grad_unemployed and cgs$major_category 
+## 
+##                                     Agriculture &amp; Natural Resources Arts  
+## Arts                                0.3522                          -     
+## Biology &amp; Life Science              0.4583                          0.7615
+## Business                            0.0031                          0.0691
+## Communications &amp; Journalism         0.2540                          0.7020
+## Computers &amp; Mathematics             0.3998                          0.8742
+## Education                           0.1176                          0.6585
+## Engineering                         0.4140                          0.7222
+## Health                              0.5044                          0.7329
+## Humanities &amp; Liberal Arts           0.0307                          0.3083
+## Industrial Arts &amp; Consumer Services 0.7846                          0.5531
+## Law &amp; Public Policy                 0.6373                          0.7475
+## Physical Sciences                   0.4647                          0.8090
+## Psychology &amp; Social Work            0.0632                          0.3920
+## Social Science                      0.0209                          0.1971
+##                                     Biology &amp; Life Science Business
+## Arts                                -                      -       
+## Biology &amp; Life Science              -                      -       
+## Business                            0.0140                 -       
+## Communications &amp; Journalism         0.5155                 0.3057  
+## Computers &amp; Mathematics             0.8797                 0.0302  
+## Education                           0.3736                 0.0933  
+## Engineering                         0.9817                 0.0044  
+## Health                              0.9569                 0.0156  
+## Humanities &amp; Liberal Arts           0.1192                 0.3241  
+## Industrial Arts &amp; Consumer Services 0.7093                 0.0171  
+## Law &amp; Public Policy                 0.9251                 0.0577  
+## Physical Sciences                   0.9617                 0.0273  
+## Psychology &amp; Social Work            0.1984                 0.3514  
+## Social Science                      0.0756                 0.6570  
+##                                     Communications &amp; Journalism
+## Arts                                -                          
+## Biology &amp; Life Science              -                          
+## Business                            -                          
+## Communications &amp; Journalism         -                          
+## Computers &amp; Mathematics             0.5981                     
+## Education                           0.9388                     
+## Engineering                         0.4808                     
+## Health                              0.4995                     
+## Humanities &amp; Liberal Arts           0.7059                     
+## Industrial Arts &amp; Consumer Services 0.3882                     
+## Law &amp; Public Policy                 0.5335                     
+## Physical Sciences                   0.5554                     
+## Psychology &amp; Social Work            0.7620                     
+## Social Science                      0.5123                     
+##                                     Computers &amp; Mathematics Education
+## Arts                                -                       -        
+## Biology &amp; Life Science              -                       -        
+## Business                            -                       -        
+## Communications &amp; Journalism         -                       -        
+## Computers &amp; Mathematics             -                       -        
+## Education                           0.4989                  -        
+## Engineering                         0.8468                  0.2851   
+## Health                              0.8438                  0.3638   
+## Humanities &amp; Liberal Arts           0.1911                  0.4778   
+## Industrial Arts &amp; Consumer Services 0.6291                  0.2721   
+## Law &amp; Public Policy                 0.8384                  0.4646   
+## Physical Sciences                   0.9251                  0.4481   
+## Psychology &amp; Social Work            0.2766                  0.5895   
+## Social Science                      0.1198                  0.2952   
+##                                     Engineering Health
+## Arts                                -           -     
+## Biology &amp; Life Science              -           -     
+## Business                            -           -     
+## Communications &amp; Journalism         -           -     
+## Computers &amp; Mathematics             -           -     
+## Education                           -           -     
+## Engineering                         -           -     
+## Health                              0.9679      -     
+## Humanities &amp; Liberal Arts           0.0656      0.1211
+## Industrial Arts &amp; Consumer Services 0.6950      0.7504
+## Law &amp; Public Policy                 0.9316      0.9585
+## Physical Sciences                   0.9405      0.9234
+## Psychology &amp; Social Work            0.1447      0.1956
+## Social Science                      0.0448      0.0768
+##                                     Humanities &amp; Liberal Arts
+## Arts                                -                        
+## Biology &amp; Life Science              -                        
+## Business                            -                        
+## Communications &amp; Journalism         -                        
+## Computers &amp; Mathematics             -                        
+## Education                           -                        
+## Engineering                         -                        
+## Health                              -                        
+## Humanities &amp; Liberal Arts           -                        
+## Industrial Arts &amp; Consumer Services 0.1010                   
+## Law &amp; Public Policy                 0.2233                   
+## Physical Sciences                   0.1703                   
+## Psychology &amp; Social Work            0.9425                   
+## Social Science                      0.6667                   
+##                                     Industrial Arts &amp; Consumer Services
+## Arts                                -                                  
+## Biology &amp; Life Science              -                                  
+## Business                            -                                  
+## Communications &amp; Journalism         -                                  
+## Computers &amp; Mathematics             -                                  
+## Education                           -                                  
+## Engineering                         -                                  
+## Health                              -                                  
+## Humanities &amp; Liberal Arts           -                                  
+## Industrial Arts &amp; Consumer Services -                                  
+## Law &amp; Public Policy                 0.8328                             
+## Physical Sciences                   0.6962                             
+## Psychology &amp; Social Work            0.1524                             
+## Social Science                      0.0648                             
+##                                     Law &amp; Public Policy Physical Sciences
+## Arts                                -                   -                
+## Biology &amp; Life Science              -                   -                
+## Business                            -                   -                
+## Communications &amp; Journalism         -                   -                
+## Computers &amp; Mathematics             -                   -                
+## Education                           -                   -                
+## Engineering                         -                   -                
+## Health                              -                   -                
+## Humanities &amp; Liberal Arts           -                   -                
+## Industrial Arts &amp; Consumer Services -                   -                
+## Law &amp; Public Policy                 -                   -                
+## Physical Sciences                   0.8999              -                
+## Psychology &amp; Social Work            0.2830              0.2488           
+## Social Science                      0.1468              0.1073           
+##                                     Psychology &amp; Social Work
+## Arts                                -                       
+## Biology &amp; Life Science              -                       
+## Business                            -                       
+## Communications &amp; Journalism         -                       
+## Computers &amp; Mathematics             -                       
+## Education                           -                       
+## Engineering                         -                       
+## Health                              -                       
+## Humanities &amp; Liberal Arts           -                       
+## Industrial Arts &amp; Consumer Services -                       
+## Law &amp; Public Policy                 -                       
+## Physical Sciences                   -                       
+## Psychology &amp; Social Work            -                       
+## Social Science                      0.6530                  
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(cgs$nongrad_employed, cgs$major_category, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  cgs$nongrad_employed and cgs$major_category 
+## 
+##                                     Agriculture &amp; Natural Resources Arts   
+## Arts                                0.42554                         -      
+## Biology &amp; Life Science              0.90183                         0.46062
+## Business                            2.4e-05                         0.00149
+## Communications &amp; Journalism         0.09081                         0.30692
+## Computers &amp; Mathematics             0.52818                         0.82530
+## Education                           0.27597                         0.88682
+## Engineering                         0.68928                         0.56199
+## Health                              0.28445                         0.85953
+## Humanities &amp; Liberal Arts           0.33948                         0.97785
+## Industrial Arts &amp; Consumer Services 0.70213                         0.71381
+## Law &amp; Public Policy                 0.56101                         0.91649
+## Physical Sciences                   0.86891                         0.52112
+## Psychology &amp; Social Work            0.44800                         0.95172
+## Social Science                      0.24908                         0.75393
+##                                     Biology &amp; Life Science Business
+## Arts                                -                      -       
+## Biology &amp; Life Science              -                      -       
+## Business                            7.8e-06                -       
+## Communications &amp; Journalism         0.09390                0.15069 
+## Computers &amp; Mathematics             0.57722                0.00021 
+## Education                           0.28877                0.00027 
+## Engineering                         0.76900                1.2e-06 
+## Health                              0.30042                0.00078 
+## Humanities &amp; Liberal Arts           0.36164                0.00020 
+## Industrial Arts &amp; Consumer Services 0.76656                0.00059 
+## Law &amp; Public Policy                 0.60777                0.00459 
+## Physical Sciences                   0.95620                4.8e-05 
+## Psychology &amp; Social Work            0.48602                0.00080 
+## Social Science                      0.26256                0.00314 
+##                                     Communications &amp; Journalism
+## Arts                                -                          
+## Biology &amp; Life Science              -                          
+## Business                            -                          
+## Communications &amp; Journalism         -                          
+## Computers &amp; Mathematics             0.21278                    
+## Education                           0.31288                    
+## Engineering                         0.10897                    
+## Health                              0.34505                    
+## Humanities &amp; Liberal Arts           0.27570                    
+## Industrial Arts &amp; Consumer Services 0.19385                    
+## Law &amp; Public Policy                 0.30695                    
+## Physical Sciences                   0.11689                    
+## Psychology &amp; Social Work            0.27580                    
+## Social Science                      0.43033                    
+##                                     Computers &amp; Mathematics Education
+## Arts                                -                       -        
+## Biology &amp; Life Science              -                       -        
+## Business                            -                       -        
+## Communications &amp; Journalism         -                       -        
+## Computers &amp; Mathematics             -                       -        
+## Education                           0.67512                 -        
+## Engineering                         0.71543                 0.34692  
+## Health                              0.66057                 0.96000  
+## Humanities &amp; Liberal Arts           0.77259                 0.89051  
+## Industrial Arts &amp; Consumer Services 0.85677                 0.57912  
+## Law &amp; Public Policy                 0.93675                 0.81270  
+## Physical Sciences                   0.64401                 0.36431  
+## Psychology &amp; Social Work            0.87071                 0.82704  
+## Social Science                      0.57081                 0.82767  
+##                                     Engineering Health 
+## Arts                                -           -      
+## Biology &amp; Life Science              -           -      
+## Business                            -           -      
+## Communications &amp; Journalism         -           -      
+## Computers &amp; Mathematics             -           -      
+## Education                           -           -      
+## Engineering                         -           -      
+## Health                              0.36325     -      
+## Humanities &amp; Liberal Arts           0.44365     0.85936
+## Industrial Arts &amp; Consumer Services 0.92083     0.56953
+## Law &amp; Public Policy                 0.72261     0.79175
+## Physical Sciences                   0.84255     0.36877
+## Psychology &amp; Social Work            0.59618     0.80267
+## Social Science                      0.31496     0.87109
+##                                     Humanities &amp; Liberal Arts
+## Arts                                -                        
+## Biology &amp; Life Science              -                        
+## Business                            -                        
+## Communications &amp; Journalism         -                        
+## Computers &amp; Mathematics             -                        
+## Education                           -                        
+## Engineering                         -                        
+## Health                              -                        
+## Humanities &amp; Liberal Arts           -                        
+## Industrial Arts &amp; Consumer Services 0.65909                  
+## Law &amp; Public Policy                 0.88922                  
+## Physical Sciences                   0.43832                  
+## Psychology &amp; Social Work            0.92145                  
+## Social Science                      0.73958                  
+##                                     Industrial Arts &amp; Consumer Services
+## Arts                                -                                  
+## Biology &amp; Life Science              -                                  
+## Business                            -                                  
+## Communications &amp; Journalism         -                                  
+## Computers &amp; Mathematics             -                                  
+## Education                           -                                  
+## Engineering                         -                                  
+## Health                              -                                  
+## Humanities &amp; Liberal Arts           -                                  
+## Industrial Arts &amp; Consumer Services -                                  
+## Law &amp; Public Policy                 0.82422                            
+## Physical Sciences                   0.81597                            
+## Psychology &amp; Social Work            0.75027                            
+## Social Science                      0.49745                            
+##                                     Law &amp; Public Policy Physical Sciences
+## Arts                                -                   -                
+## Biology &amp; Life Science              -                   -                
+## Business                            -                   -                
+## Communications &amp; Journalism         -                   -                
+## Computers &amp; Mathematics             -                   -                
+## Education                           -                   -                
+## Engineering                         -                   -                
+## Health                              -                   -                
+## Humanities &amp; Liberal Arts           -                   -                
+## Industrial Arts &amp; Consumer Services -                   -                
+## Law &amp; Public Policy                 -                   -                
+## Physical Sciences                   0.65505             -                
+## Psychology &amp; Social Work            0.95660             0.54953          
+## Social Science                      0.70379             0.32080          
+##                                     Psychology &amp; Social Work
+## Arts                                -                       
+## Biology &amp; Life Science              -                       
+## Business                            -                       
+## Communications &amp; Journalism         -                       
+## Computers &amp; Mathematics             -                       
+## Education                           -                       
+## Engineering                         -                       
+## Health                              -                       
+## Humanities &amp; Liberal Arts           -                       
+## Industrial Arts &amp; Consumer Services -                       
+## Law &amp; Public Policy                 -                       
+## Physical Sciences                   -                       
+## Psychology &amp; Social Work            -                       
+## Social Science                      0.69988                 
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(cgs$nongrad_unemployed, cgs$major_category, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  cgs$nongrad_unemployed and cgs$major_category 
+## 
+##                                     Agriculture &amp; Natural Resources Arts   
+## Arts                                0.18798                         -      
+## Biology &amp; Life Science              0.80496                         0.23814
+## Business                            1.3e-05                         0.00541
+## Communications &amp; Journalism         0.02672                         0.25747
+## Computers &amp; Mathematics             0.46720                         0.50731
+## Education                           0.38080                         0.52940
+## Engineering                         0.59942                         0.27855
+## Health                              0.57225                         0.40034
+## Humanities &amp; Liberal Arts           0.16296                         0.90023
+## Industrial Arts &amp; Consumer Services 0.66956                         0.42214
+## Law &amp; Public Policy                 0.49915                         0.65375
+## Physical Sciences                   0.79049                         0.28563
+## Psychology &amp; Social Work            0.24770                         0.84665
+## Social Science                      0.12378                         0.86339
+##                                     Biology &amp; Life Science Business
+## Arts                                -                      -       
+## Biology &amp; Life Science              -                      -       
+## Business                            6.9e-06                -       
+## Communications &amp; Journalism         0.03282                0.31900 
+## Computers &amp; Mathematics             0.59260                0.00017 
+## Education                           0.49229                6.0e-05 
+## Engineering                         0.78109                9.7e-07 
+## Health                              0.72259                5.9e-05 
+## Humanities &amp; Liberal Arts           0.20798                0.00063 
+## Industrial Arts &amp; Consumer Services 0.81535                0.00044 
+## Law &amp; Public Policy                 0.60686                0.00432 
+## Physical Sciences                   0.96806                4.1e-05 
+## Psychology &amp; Social Work            0.31497                0.00202 
+## Social Science                      0.15632                0.00706 
+##                                     Communications &amp; Journalism
+## Arts                                -                          
+## Biology &amp; Life Science              -                          
+## Business                            -                          
+## Communications &amp; Journalism         -                          
+## Computers &amp; Mathematics             0.08725                    
+## Education                           0.08502                    
+## Engineering                         0.03566                    
+## Health                              0.06304                    
+## Humanities &amp; Liberal Arts           0.18398                    
+## Industrial Arts &amp; Consumer Services 0.07784                    
+## Law &amp; Public Policy                 0.15776                    
+## Physical Sciences                   0.04349                    
+## Psychology &amp; Social Work            0.19049                    
+## Social Science                      0.30986                    
+##                                     Computers &amp; Mathematics Education
+## Arts                                -                       -        
+## Biology &amp; Life Science              -                       -        
+## Business                            -                       -        
+## Communications &amp; Journalism         -                       -        
+## Computers &amp; Mathematics             -                       -        
+## Education                           0.92718                 -        
+## Engineering                         0.72364                 0.60524  
+## Health                              0.85553                 0.76973  
+## Humanities &amp; Liberal Arts           0.52349                 0.54508  
+## Industrial Arts &amp; Consumer Services 0.82395                 0.75176  
+## Law &amp; Public Policy                 0.92245                 0.97399  
+## Physical Sciences                   0.64872                 0.56029  
+## Psychology &amp; Social Work            0.63359                 0.66840  
+## Social Science                      0.38381                 0.39328  
+##                                     Engineering Health 
+## Arts                                -           -      
+## Biology &amp; Life Science              -           -      
+## Business                            -           -      
+## Communications &amp; Journalism         -           -      
+## Computers &amp; Mathematics             -           -      
+## Education                           -           -      
+## Engineering                         -           -      
+## Health                              0.88595     -      
+## Humanities &amp; Liberal Arts           0.23487     0.39556
+## Industrial Arts &amp; Consumer Services 0.96654     0.94708
+## Law &amp; Public Policy                 0.71363     0.80924
+## Physical Sciences                   0.84037     0.77375
+## Psychology &amp; Social Work            0.37411     0.51057
+## Social Science                      0.17658     0.28950
+##                                     Humanities &amp; Liberal Arts
+## Arts                                -                        
+## Biology &amp; Life Science              -                        
+## Business                            -                        
+## Communications &amp; Journalism         -                        
+## Computers &amp; Mathematics             -                        
+## Education                           -                        
+## Engineering                         -                        
+## Health                              -                        
+## Humanities &amp; Liberal Arts           -                        
+## Industrial Arts &amp; Consumer Services 0.43078                  
+## Law &amp; Public Policy                 0.69730                  
+## Physical Sciences                   0.26860                  
+## Psychology &amp; Social Work            0.92614                  
+## Social Science                      0.74260                  
+##                                     Industrial Arts &amp; Consumer Services
+## Arts                                -                                  
+## Biology &amp; Life Science              -                                  
+## Business                            -                                  
+## Communications &amp; Journalism         -                                  
+## Computers &amp; Mathematics             -                                  
+## Education                           -                                  
+## Engineering                         -                                  
+## Health                              -                                  
+## Humanities &amp; Liberal Arts           -                                  
+## Industrial Arts &amp; Consumer Services -                                  
+## Law &amp; Public Policy                 0.78458                            
+## Physical Sciences                   0.85265                            
+## Psychology &amp; Social Work            0.52326                            
+## Social Science                      0.32238                            
+##                                     Law &amp; Public Policy Physical Sciences
+## Arts                                -                   -                
+## Biology &amp; Life Science              -                   -                
+## Business                            -                   -                
+## Communications &amp; Journalism         -                   -                
+## Computers &amp; Mathematics             -                   -                
+## Education                           -                   -                
+## Engineering                         -                   -                
+## Health                              -                   -                
+## Humanities &amp; Liberal Arts           -                   -                
+## Industrial Arts &amp; Consumer Services -                   -                
+## Law &amp; Public Policy                 -                   -                
+## Physical Sciences                   0.64607             -                
+## Psychology &amp; Social Work            0.77175             0.36884          
+## Social Science                      0.54309             0.19952          
+##                                     Psychology &amp; Social Work
+## Arts                                -                       
+## Biology &amp; Life Science              -                       
+## Business                            -                       
+## Communications &amp; Journalism         -                       
+## Computers &amp; Mathematics             -                       
+## Education                           -                       
+## Engineering                         -                       
+## Health                              -                       
+## Humanities &amp; Liberal Arts           -                       
+## Industrial Arts &amp; Consumer Services -                       
+## Law &amp; Public Policy                 -                       
+## Physical Sciences                   -                       
+## Psychology &amp; Social Work            -                       
+## Social Science                      0.70645                 
+## 
+## P value adjustment method: none</code></pre>
+<p>5 tests were performed (one ANOVA and 4 post-hoc t tests), and the probability of calculating at least one type I error is 0.2262191. Adjusting for the bonferroni correction in the post-hoc t-tests, we get a set of different results.</p>
+<p>For non-graduate students who are employed numbers, there is a significant mean difference in the employed number of people with the Bonferonni Correction between Business majors vs Agricultural &amp; Natural Resources majors, between Business majors vs Computers &amp; Mathematics, between Business majors vs Education majors, between Business majors vs Engineering majors, between Business majors vs Humanities &amp; Liberal Arts majors, and between Business majors vs Physical Sciences majors, between Business majors. The p-value is less than 0.05 for all of these comparisons.</p>
+<p>For non-graudate students who are unemployed, there is a significant mean difference in the unemployed number of people with the Bonferonni Correction between Business majors vs Agriculture &amp; Natural Resources majors, between Business majors vs Biology &amp; Life Sciences majors, between Business majors vs Computers &amp; Mathematics, between Business majors vs Education majors, between Business majors vs Engineering majors, between Business majors vs Humanities &amp; Liberal Arts majors, and between Business majors vs Physical Science majors.The p-values for all of these comparisons (taking into account the Bonferroni Correction) is less than 0.05.</p>
+<pre class="r"><code># Calculating the probability of one type-one error
+type1_error_rate &lt;- 1 - 0.95^5
+type1_error_rate</code></pre>
+<pre><code>## [1] 0.2262191</code></pre>
+<pre class="r"><code>bone_level &lt;- 0.05/5
+bone_level</code></pre>
+<pre><code>## [1] 0.01</code></pre>
+<pre class="r"><code>pairwise.t.test(cgs$grad_employed, cgs$major_category, p.adj = &quot;bonferroni&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  cgs$grad_employed and cgs$major_category 
+## 
+##                                     Agriculture &amp; Natural Resources Arts
+## Arts                                1                               -   
+## Biology &amp; Life Science              1                               1   
+## Business                            1                               1   
+## Communications &amp; Journalism         1                               1   
+## Computers &amp; Mathematics             1                               1   
+## Education                           1                               1   
+## Engineering                         1                               1   
+## Health                              1                               1   
+## Humanities &amp; Liberal Arts           1                               1   
+## Industrial Arts &amp; Consumer Services 1                               1   
+## Law &amp; Public Policy                 1                               1   
+## Physical Sciences                   1                               1   
+## Psychology &amp; Social Work            1                               1   
+## Social Science                      1                               1   
+##                                     Biology &amp; Life Science Business
+## Arts                                -                      -       
+## Biology &amp; Life Science              -                      -       
+## Business                            1                      -       
+## Communications &amp; Journalism         1                      1       
+## Computers &amp; Mathematics             1                      1       
+## Education                           1                      1       
+## Engineering                         1                      1       
+## Health                              1                      1       
+## Humanities &amp; Liberal Arts           1                      1       
+## Industrial Arts &amp; Consumer Services 1                      1       
+## Law &amp; Public Policy                 1                      1       
+## Physical Sciences                   1                      1       
+## Psychology &amp; Social Work            1                      1       
+## Social Science                      1                      1       
+##                                     Communications &amp; Journalism
+## Arts                                -                          
+## Biology &amp; Life Science              -                          
+## Business                            -                          
+## Communications &amp; Journalism         -                          
+## Computers &amp; Mathematics             1                          
+## Education                           1                          
+## Engineering                         1                          
+## Health                              1                          
+## Humanities &amp; Liberal Arts           1                          
+## Industrial Arts &amp; Consumer Services 1                          
+## Law &amp; Public Policy                 1                          
+## Physical Sciences                   1                          
+## Psychology &amp; Social Work            1                          
+## Social Science                      1                          
+##                                     Computers &amp; Mathematics Education
+## Arts                                -                       -        
+## Biology &amp; Life Science              -                       -        
+## Business                            -                       -        
+## Communications &amp; Journalism         -                       -        
+## Computers &amp; Mathematics             -                       -        
+## Education                           1                       -        
+## Engineering                         1                       1        
+## Health                              1                       1        
+## Humanities &amp; Liberal Arts           1                       1        
+## Industrial Arts &amp; Consumer Services 1                       1        
+## Law &amp; Public Policy                 1                       1        
+## Physical Sciences                   1                       1        
+## Psychology &amp; Social Work            1                       1        
+## Social Science                      1                       1        
+##                                     Engineering Health
+## Arts                                -           -     
+## Biology &amp; Life Science              -           -     
+## Business                            -           -     
+## Communications &amp; Journalism         -           -     
+## Computers &amp; Mathematics             -           -     
+## Education                           -           -     
+## Engineering                         -           -     
+## Health                              1           -     
+## Humanities &amp; Liberal Arts           1           1     
+## Industrial Arts &amp; Consumer Services 1           1     
+## Law &amp; Public Policy                 1           1     
+## Physical Sciences                   1           1     
+## Psychology &amp; Social Work            1           1     
+## Social Science                      1           1     
+##                                     Humanities &amp; Liberal Arts
+## Arts                                -                        
+## Biology &amp; Life Science              -                        
+## Business                            -                        
+## Communications &amp; Journalism         -                        
+## Computers &amp; Mathematics             -                        
+## Education                           -                        
+## Engineering                         -                        
+## Health                              -                        
+## Humanities &amp; Liberal Arts           -                        
+## Industrial Arts &amp; Consumer Services 1                        
+## Law &amp; Public Policy                 1                        
+## Physical Sciences                   1                        
+## Psychology &amp; Social Work            1                        
+## Social Science                      1                        
+##                                     Industrial Arts &amp; Consumer Services
+## Arts                                -                                  
+## Biology &amp; Life Science              -                                  
+## Business                            -                                  
+## Communications &amp; Journalism         -                                  
+## Computers &amp; Mathematics             -                                  
+## Education                           -                                  
+## Engineering                         -                                  
+## Health                              -                                  
+## Humanities &amp; Liberal Arts           -                                  
+## Industrial Arts &amp; Consumer Services -                                  
+## Law &amp; Public Policy                 1                                  
+## Physical Sciences                   1                                  
+## Psychology &amp; Social Work            1                                  
+## Social Science                      1                                  
+##                                     Law &amp; Public Policy Physical Sciences
+## Arts                                -                   -                
+## Biology &amp; Life Science              -                   -                
+## Business                            -                   -                
+## Communications &amp; Journalism         -                   -                
+## Computers &amp; Mathematics             -                   -                
+## Education                           -                   -                
+## Engineering                         -                   -                
+## Health                              -                   -                
+## Humanities &amp; Liberal Arts           -                   -                
+## Industrial Arts &amp; Consumer Services -                   -                
+## Law &amp; Public Policy                 -                   -                
+## Physical Sciences                   1                   -                
+## Psychology &amp; Social Work            1                   1                
+## Social Science                      1                   1                
+##                                     Psychology &amp; Social Work
+## Arts                                -                       
+## Biology &amp; Life Science              -                       
+## Business                            -                       
+## Communications &amp; Journalism         -                       
+## Computers &amp; Mathematics             -                       
+## Education                           -                       
+## Engineering                         -                       
+## Health                              -                       
+## Humanities &amp; Liberal Arts           -                       
+## Industrial Arts &amp; Consumer Services -                       
+## Law &amp; Public Policy                 -                       
+## Physical Sciences                   -                       
+## Psychology &amp; Social Work            -                       
+## Social Science                      1                       
+## 
+## P value adjustment method: bonferroni</code></pre>
+<pre class="r"><code>pairwise.t.test(cgs$grad_unemployed, cgs$major_category, p.adj = &quot;bonferroni&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  cgs$grad_unemployed and cgs$major_category 
+## 
+##                                     Agriculture &amp; Natural Resources Arts
+## Arts                                1.00                            -   
+## Biology &amp; Life Science              1.00                            1.00
+## Business                            0.32                            1.00
+## Communications &amp; Journalism         1.00                            1.00
+## Computers &amp; Mathematics             1.00                            1.00
+## Education                           1.00                            1.00
+## Engineering                         1.00                            1.00
+## Health                              1.00                            1.00
+## Humanities &amp; Liberal Arts           1.00                            1.00
+## Industrial Arts &amp; Consumer Services 1.00                            1.00
+## Law &amp; Public Policy                 1.00                            1.00
+## Physical Sciences                   1.00                            1.00
+## Psychology &amp; Social Work            1.00                            1.00
+## Social Science                      1.00                            1.00
+##                                     Biology &amp; Life Science Business
+## Arts                                -                      -       
+## Biology &amp; Life Science              -                      -       
+## Business                            1.00                   -       
+## Communications &amp; Journalism         1.00                   1.00    
+## Computers &amp; Mathematics             1.00                   1.00    
+## Education                           1.00                   1.00    
+## Engineering                         1.00                   0.46    
+## Health                              1.00                   1.00    
+## Humanities &amp; Liberal Arts           1.00                   1.00    
+## Industrial Arts &amp; Consumer Services 1.00                   1.00    
+## Law &amp; Public Policy                 1.00                   1.00    
+## Physical Sciences                   1.00                   1.00    
+## Psychology &amp; Social Work            1.00                   1.00    
+## Social Science                      1.00                   1.00    
+##                                     Communications &amp; Journalism
+## Arts                                -                          
+## Biology &amp; Life Science              -                          
+## Business                            -                          
+## Communications &amp; Journalism         -                          
+## Computers &amp; Mathematics             1.00                       
+## Education                           1.00                       
+## Engineering                         1.00                       
+## Health                              1.00                       
+## Humanities &amp; Liberal Arts           1.00                       
+## Industrial Arts &amp; Consumer Services 1.00                       
+## Law &amp; Public Policy                 1.00                       
+## Physical Sciences                   1.00                       
+## Psychology &amp; Social Work            1.00                       
+## Social Science                      1.00                       
+##                                     Computers &amp; Mathematics Education
+## Arts                                -                       -        
+## Biology &amp; Life Science              -                       -        
+## Business                            -                       -        
+## Communications &amp; Journalism         -                       -        
+## Computers &amp; Mathematics             -                       -        
+## Education                           1.00                    -        
+## Engineering                         1.00                    1.00     
+## Health                              1.00                    1.00     
+## Humanities &amp; Liberal Arts           1.00                    1.00     
+## Industrial Arts &amp; Consumer Services 1.00                    1.00     
+## Law &amp; Public Policy                 1.00                    1.00     
+## Physical Sciences                   1.00                    1.00     
+## Psychology &amp; Social Work            1.00                    1.00     
+## Social Science                      1.00                    1.00     
+##                                     Engineering Health
+## Arts                                -           -     
+## Biology &amp; Life Science              -           -     
+## Business                            -           -     
+## Communications &amp; Journalism         -           -     
+## Computers &amp; Mathematics             -           -     
+## Education                           -           -     
+## Engineering                         -           -     
+## Health                              1.00        -     
+## Humanities &amp; Liberal Arts           1.00        1.00  
+## Industrial Arts &amp; Consumer Services 1.00        1.00  
+## Law &amp; Public Policy                 1.00        1.00  
+## Physical Sciences                   1.00        1.00  
+## Psychology &amp; Social Work            1.00        1.00  
+## Social Science                      1.00        1.00  
+##                                     Humanities &amp; Liberal Arts
+## Arts                                -                        
+## Biology &amp; Life Science              -                        
+## Business                            -                        
+## Communications &amp; Journalism         -                        
+## Computers &amp; Mathematics             -                        
+## Education                           -                        
+## Engineering                         -                        
+## Health                              -                        
+## Humanities &amp; Liberal Arts           -                        
+## Industrial Arts &amp; Consumer Services 1.00                     
+## Law &amp; Public Policy                 1.00                     
+## Physical Sciences                   1.00                     
+## Psychology &amp; Social Work            1.00                     
+## Social Science                      1.00                     
+##                                     Industrial Arts &amp; Consumer Services
+## Arts                                -                                  
+## Biology &amp; Life Science              -                                  
+## Business                            -                                  
+## Communications &amp; Journalism         -                                  
+## Computers &amp; Mathematics             -                                  
+## Education                           -                                  
+## Engineering                         -                                  
+## Health                              -                                  
+## Humanities &amp; Liberal Arts           -                                  
+## Industrial Arts &amp; Consumer Services -                                  
+## Law &amp; Public Policy                 1.00                               
+## Physical Sciences                   1.00                               
+## Psychology &amp; Social Work            1.00                               
+## Social Science                      1.00                               
+##                                     Law &amp; Public Policy Physical Sciences
+## Arts                                -                   -                
+## Biology &amp; Life Science              -                   -                
+## Business                            -                   -                
+## Communications &amp; Journalism         -                   -                
+## Computers &amp; Mathematics             -                   -                
+## Education                           -                   -                
+## Engineering                         -                   -                
+## Health                              -                   -                
+## Humanities &amp; Liberal Arts           -                   -                
+## Industrial Arts &amp; Consumer Services -                   -                
+## Law &amp; Public Policy                 -                   -                
+## Physical Sciences                   1.00                -                
+## Psychology &amp; Social Work            1.00                1.00             
+## Social Science                      1.00                1.00             
+##                                     Psychology &amp; Social Work
+## Arts                                -                       
+## Biology &amp; Life Science              -                       
+## Business                            -                       
+## Communications &amp; Journalism         -                       
+## Computers &amp; Mathematics             -                       
+## Education                           -                       
+## Engineering                         -                       
+## Health                              -                       
+## Humanities &amp; Liberal Arts           -                       
+## Industrial Arts &amp; Consumer Services -                       
+## Law &amp; Public Policy                 -                       
+## Physical Sciences                   -                       
+## Psychology &amp; Social Work            -                       
+## Social Science                      1.00                    
+## 
+## P value adjustment method: bonferroni</code></pre>
+<pre class="r"><code>pairwise.t.test(cgs$nongrad_employed, cgs$major_category, p.adj = &quot;bonferroni&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  cgs$nongrad_employed and cgs$major_category 
+## 
+##                                     Agriculture &amp; Natural Resources Arts   
+## Arts                                1.00000                         -      
+## Biology &amp; Life Science              1.00000                         1.00000
+## Business                            0.00250                         0.15603
+## Communications &amp; Journalism         1.00000                         1.00000
+## Computers &amp; Mathematics             1.00000                         1.00000
+## Education                           1.00000                         1.00000
+## Engineering                         1.00000                         1.00000
+## Health                              1.00000                         1.00000
+## Humanities &amp; Liberal Arts           1.00000                         1.00000
+## Industrial Arts &amp; Consumer Services 1.00000                         1.00000
+## Law &amp; Public Policy                 1.00000                         1.00000
+## Physical Sciences                   1.00000                         1.00000
+## Psychology &amp; Social Work            1.00000                         1.00000
+## Social Science                      1.00000                         1.00000
+##                                     Biology &amp; Life Science Business
+## Arts                                -                      -       
+## Biology &amp; Life Science              -                      -       
+## Business                            0.00082                -       
+## Communications &amp; Journalism         1.00000                1.00000 
+## Computers &amp; Mathematics             1.00000                0.02180 
+## Education                           1.00000                0.02833 
+## Engineering                         1.00000                0.00013 
+## Health                              1.00000                0.08139 
+## Humanities &amp; Liberal Arts           1.00000                0.02141 
+## Industrial Arts &amp; Consumer Services 1.00000                0.06231 
+## Law &amp; Public Policy                 1.00000                0.48208 
+## Physical Sciences                   1.00000                0.00506 
+## Psychology &amp; Social Work            1.00000                0.08388 
+## Social Science                      1.00000                0.32988 
+##                                     Communications &amp; Journalism
+## Arts                                -                          
+## Biology &amp; Life Science              -                          
+## Business                            -                          
+## Communications &amp; Journalism         -                          
+## Computers &amp; Mathematics             1.00000                    
+## Education                           1.00000                    
+## Engineering                         1.00000                    
+## Health                              1.00000                    
+## Humanities &amp; Liberal Arts           1.00000                    
+## Industrial Arts &amp; Consumer Services 1.00000                    
+## Law &amp; Public Policy                 1.00000                    
+## Physical Sciences                   1.00000                    
+## Psychology &amp; Social Work            1.00000                    
+## Social Science                      1.00000                    
+##                                     Computers &amp; Mathematics Education
+## Arts                                -                       -        
+## Biology &amp; Life Science              -                       -        
+## Business                            -                       -        
+## Communications &amp; Journalism         -                       -        
+## Computers &amp; Mathematics             -                       -        
+## Education                           1.00000                 -        
+## Engineering                         1.00000                 1.00000  
+## Health                              1.00000                 1.00000  
+## Humanities &amp; Liberal Arts           1.00000                 1.00000  
+## Industrial Arts &amp; Consumer Services 1.00000                 1.00000  
+## Law &amp; Public Policy                 1.00000                 1.00000  
+## Physical Sciences                   1.00000                 1.00000  
+## Psychology &amp; Social Work            1.00000                 1.00000  
+## Social Science                      1.00000                 1.00000  
+##                                     Engineering Health 
+## Arts                                -           -      
+## Biology &amp; Life Science              -           -      
+## Business                            -           -      
+## Communications &amp; Journalism         -           -      
+## Computers &amp; Mathematics             -           -      
+## Education                           -           -      
+## Engineering                         -           -      
+## Health                              1.00000     -      
+## Humanities &amp; Liberal Arts           1.00000     1.00000
+## Industrial Arts &amp; Consumer Services 1.00000     1.00000
+## Law &amp; Public Policy                 1.00000     1.00000
+## Physical Sciences                   1.00000     1.00000
+## Psychology &amp; Social Work            1.00000     1.00000
+## Social Science                      1.00000     1.00000
+##                                     Humanities &amp; Liberal Arts
+## Arts                                -                        
+## Biology &amp; Life Science              -                        
+## Business                            -                        
+## Communications &amp; Journalism         -                        
+## Computers &amp; Mathematics             -                        
+## Education                           -                        
+## Engineering                         -                        
+## Health                              -                        
+## Humanities &amp; Liberal Arts           -                        
+## Industrial Arts &amp; Consumer Services 1.00000                  
+## Law &amp; Public Policy                 1.00000                  
+## Physical Sciences                   1.00000                  
+## Psychology &amp; Social Work            1.00000                  
+## Social Science                      1.00000                  
+##                                     Industrial Arts &amp; Consumer Services
+## Arts                                -                                  
+## Biology &amp; Life Science              -                                  
+## Business                            -                                  
+## Communications &amp; Journalism         -                                  
+## Computers &amp; Mathematics             -                                  
+## Education                           -                                  
+## Engineering                         -                                  
+## Health                              -                                  
+## Humanities &amp; Liberal Arts           -                                  
+## Industrial Arts &amp; Consumer Services -                                  
+## Law &amp; Public Policy                 1.00000                            
+## Physical Sciences                   1.00000                            
+## Psychology &amp; Social Work            1.00000                            
+## Social Science                      1.00000                            
+##                                     Law &amp; Public Policy Physical Sciences
+## Arts                                -                   -                
+## Biology &amp; Life Science              -                   -                
+## Business                            -                   -                
+## Communications &amp; Journalism         -                   -                
+## Computers &amp; Mathematics             -                   -                
+## Education                           -                   -                
+## Engineering                         -                   -                
+## Health                              -                   -                
+## Humanities &amp; Liberal Arts           -                   -                
+## Industrial Arts &amp; Consumer Services -                   -                
+## Law &amp; Public Policy                 -                   -                
+## Physical Sciences                   1.00000             -                
+## Psychology &amp; Social Work            1.00000             1.00000          
+## Social Science                      1.00000             1.00000          
+##                                     Psychology &amp; Social Work
+## Arts                                -                       
+## Biology &amp; Life Science              -                       
+## Business                            -                       
+## Communications &amp; Journalism         -                       
+## Computers &amp; Mathematics             -                       
+## Education                           -                       
+## Engineering                         -                       
+## Health                              -                       
+## Humanities &amp; Liberal Arts           -                       
+## Industrial Arts &amp; Consumer Services -                       
+## Law &amp; Public Policy                 -                       
+## Physical Sciences                   -                       
+## Psychology &amp; Social Work            -                       
+## Social Science                      1.00000                 
+## 
+## P value adjustment method: bonferroni</code></pre>
+<pre class="r"><code>pairwise.t.test(cgs$nongrad_unemployed, cgs$major_category, p.adj = &quot;bonferroni&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  cgs$nongrad_unemployed and cgs$major_category 
+## 
+##                                     Agriculture &amp; Natural Resources Arts   
+## Arts                                1.00000                         -      
+## Biology &amp; Life Science              1.00000                         1.00000
+## Business                            0.00136                         0.56790
+## Communications &amp; Journalism         1.00000                         1.00000
+## Computers &amp; Mathematics             1.00000                         1.00000
+## Education                           1.00000                         1.00000
+## Engineering                         1.00000                         1.00000
+## Health                              1.00000                         1.00000
+## Humanities &amp; Liberal Arts           1.00000                         1.00000
+## Industrial Arts &amp; Consumer Services 1.00000                         1.00000
+## Law &amp; Public Policy                 1.00000                         1.00000
+## Physical Sciences                   1.00000                         1.00000
+## Psychology &amp; Social Work            1.00000                         1.00000
+## Social Science                      1.00000                         1.00000
+##                                     Biology &amp; Life Science Business
+## Arts                                -                      -       
+## Biology &amp; Life Science              -                      -       
+## Business                            0.00072                -       
+## Communications &amp; Journalism         1.00000                1.00000 
+## Computers &amp; Mathematics             1.00000                0.01816 
+## Education                           1.00000                0.00628 
+## Engineering                         1.00000                0.00010 
+## Health                              1.00000                0.00622 
+## Humanities &amp; Liberal Arts           1.00000                0.06581 
+## Industrial Arts &amp; Consumer Services 1.00000                0.04599 
+## Law &amp; Public Policy                 1.00000                0.45401 
+## Physical Sciences                   1.00000                0.00429 
+## Psychology &amp; Social Work            1.00000                0.21184 
+## Social Science                      1.00000                0.74091 
+##                                     Communications &amp; Journalism
+## Arts                                -                          
+## Biology &amp; Life Science              -                          
+## Business                            -                          
+## Communications &amp; Journalism         -                          
+## Computers &amp; Mathematics             1.00000                    
+## Education                           1.00000                    
+## Engineering                         1.00000                    
+## Health                              1.00000                    
+## Humanities &amp; Liberal Arts           1.00000                    
+## Industrial Arts &amp; Consumer Services 1.00000                    
+## Law &amp; Public Policy                 1.00000                    
+## Physical Sciences                   1.00000                    
+## Psychology &amp; Social Work            1.00000                    
+## Social Science                      1.00000                    
+##                                     Computers &amp; Mathematics Education
+## Arts                                -                       -        
+## Biology &amp; Life Science              -                       -        
+## Business                            -                       -        
+## Communications &amp; Journalism         -                       -        
+## Computers &amp; Mathematics             -                       -        
+## Education                           1.00000                 -        
+## Engineering                         1.00000                 1.00000  
+## Health                              1.00000                 1.00000  
+## Humanities &amp; Liberal Arts           1.00000                 1.00000  
+## Industrial Arts &amp; Consumer Services 1.00000                 1.00000  
+## Law &amp; Public Policy                 1.00000                 1.00000  
+## Physical Sciences                   1.00000                 1.00000  
+## Psychology &amp; Social Work            1.00000                 1.00000  
+## Social Science                      1.00000                 1.00000  
+##                                     Engineering Health 
+## Arts                                -           -      
+## Biology &amp; Life Science              -           -      
+## Business                            -           -      
+## Communications &amp; Journalism         -           -      
+## Computers &amp; Mathematics             -           -      
+## Education                           -           -      
+## Engineering                         -           -      
+## Health                              1.00000     -      
+## Humanities &amp; Liberal Arts           1.00000     1.00000
+## Industrial Arts &amp; Consumer Services 1.00000     1.00000
+## Law &amp; Public Policy                 1.00000     1.00000
+## Physical Sciences                   1.00000     1.00000
+## Psychology &amp; Social Work            1.00000     1.00000
+## Social Science                      1.00000     1.00000
+##                                     Humanities &amp; Liberal Arts
+## Arts                                -                        
+## Biology &amp; Life Science              -                        
+## Business                            -                        
+## Communications &amp; Journalism         -                        
+## Computers &amp; Mathematics             -                        
+## Education                           -                        
+## Engineering                         -                        
+## Health                              -                        
+## Humanities &amp; Liberal Arts           -                        
+## Industrial Arts &amp; Consumer Services 1.00000                  
+## Law &amp; Public Policy                 1.00000                  
+## Physical Sciences                   1.00000                  
+## Psychology &amp; Social Work            1.00000                  
+## Social Science                      1.00000                  
+##                                     Industrial Arts &amp; Consumer Services
+## Arts                                -                                  
+## Biology &amp; Life Science              -                                  
+## Business                            -                                  
+## Communications &amp; Journalism         -                                  
+## Computers &amp; Mathematics             -                                  
+## Education                           -                                  
+## Engineering                         -                                  
+## Health                              -                                  
+## Humanities &amp; Liberal Arts           -                                  
+## Industrial Arts &amp; Consumer Services -                                  
+## Law &amp; Public Policy                 1.00000                            
+## Physical Sciences                   1.00000                            
+## Psychology &amp; Social Work            1.00000                            
+## Social Science                      1.00000                            
+##                                     Law &amp; Public Policy Physical Sciences
+## Arts                                -                   -                
+## Biology &amp; Life Science              -                   -                
+## Business                            -                   -                
+## Communications &amp; Journalism         -                   -                
+## Computers &amp; Mathematics             -                   -                
+## Education                           -                   -                
+## Engineering                         -                   -                
+## Health                              -                   -                
+## Humanities &amp; Liberal Arts           -                   -                
+## Industrial Arts &amp; Consumer Services -                   -                
+## Law &amp; Public Policy                 -                   -                
+## Physical Sciences                   1.00000             -                
+## Psychology &amp; Social Work            1.00000             1.00000          
+## Social Science                      1.00000             1.00000          
+##                                     Psychology &amp; Social Work
+## Arts                                -                       
+## Biology &amp; Life Science              -                       
+## Business                            -                       
+## Communications &amp; Journalism         -                       
+## Computers &amp; Mathematics             -                       
+## Education                           -                       
+## Engineering                         -                       
+## Health                              -                       
+## Humanities &amp; Liberal Arts           -                       
+## Industrial Arts &amp; Consumer Services -                       
+## Law &amp; Public Policy                 -                       
+## Physical Sciences                   -                       
+## Psychology &amp; Social Work            -                       
+## Social Science                      1.00000                 
+## 
+## P value adjustment method: bonferroni</code></pre>
+<p>Randomnization Test</p>
+<p>For the randomnization test, I will be comparing the mean number of graduate employments for people who are STEM majors vs people who are in NON-STEM majors. The null hypothesis is that the mean number of graduate employments is the same (no significant difference) between people who are STEM majors and people who are in NON-STEM majors. The alternative hypothesis is that the mean number of graduate emplyoments is signficantly different between people who are STEM majors and people who are NON-STEM majors. The p-valuee is 0.1800 which is smaller than 0.05, and this means that we FAIL to reject the null hypothesis. In conclusion, the mean number of graduate employments is the SAME (no significant difference) between people who are STEM majors and people who are NOT stem majors.</p>
+<pre class="r"><code>#Randominzation Test
+grads_data &lt;- cgs %&gt;% select(is_STEM, grad_employed)
+
+rand_dist &lt;- vector()
+
+#calculating the mean difference 
+grads_data %&gt;% group_by(is_STEM) %&gt;% summarize(mean_num_grad = mean(grad_employed)) %&gt;% summarize(diff(mean_num_grad))</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   `diff(mean_num_grad)`
+##                   &lt;dbl&gt;
+## 1               -33480.</code></pre>
+<pre class="r"><code>#Randomnization test 
+for(i in 1:5000) {
+  new &lt;- data.frame(grad_employed = sample(grads_data$grad_employed), is_STEM = grads_data$is_STEM)
+  rand_dist[i] &lt;- mean(new[new$is_STEM == TRUE,]$grad_employed) - mean(new[new$is_STEM == FALSE,]$grad_employed)
+}
+
+#calculating the p-value 
+mean(rand_dist&gt;33479.96 | rand_dist &lt; -33479.96)</code></pre>
+<pre><code>## [1] 0.1872</code></pre>
+<pre class="r"><code>#histogram of the null distribution &amp; test statistic 
+{hist(rand_dist,main=&quot;Null Distribution&quot;,ylab=&quot;Probability Density/Density&quot;); abline(v = c(-33479.96, 33479.96),col=&quot;red&quot;)}</code></pre>
+<p><img src="../../project/project_2_files/figure-html/unnamed-chunk-8-1.png" width="672" /> Part 3</p>
+<p>Linear Regression Model</p>
+<p>The null hypothesis would be that the number of non-graduates who are employed does not explain variation in the number of graduates who get employed and whether they are STEM or NON-STEM majors does not explain variation in the number of graduates who get employed either; the interaction between whether they are a STEM major or NON-STEM major with the number of non-graduates who are employed is not significant either.</p>
+<p>The alternative hypothesis would be that the number of non-graduates who are employed DOES explain variation in the number of graduates who get employed and whether they are STEM or NON-STEM majors DOES explain variation in the number of graduates who get employed; the interaction between whether they are a STEM major or NON-STEM major with the number of non-graduates who are employed IS significant.</p>
+<p>Our dependent/response variable here is going to be the number of graduates who are employed (grad_employed), while our explanatory variables will be whether they are STEM majors (is_STEM) and the number of non-graduates who are employed (nongrad_employed). Here, I am testing to see whether the number of graduate students who are employed are dependent on their majors and on the number of non-graduates who are employed (is there a significant difference in the number of graduate students who can get employed based on the number of non-graduates who are employed as well? Would the fact that non-graduate students that get jobs take away from the jobs available to the graduate students?).</p>
+<p>According to the linear regression model, the predicted number of employed graduate students who are NON-STEM majors is 8.741e4 when the amount of non-graduate students who are employed is at an average amount (Intercept coefficient). For NON-STEM majors, for every 1 non-graduate employed person increase, the number of graduate students employed increase by 3.482e-01 (nongrad_employed_c coefficient). Predicted number of employed graduates who are STEM majors (TRUE) is 2.866e04 number of people higher than for NON-STEM majors at an average number of non-graduate employment rate (is_STEMTRUE coefficient). The slope of the number of non-graduate students employed on the number of graduate students employed is 3.295e-01 greater for STEM majors compared to NON-STEM majors (nongrad_employed_c:is_STEMTRUE coefficient).</p>
+<p>Checking if our data passes the homoskesaticity assumption (equal variances), from the graph, it looks clear that our data VIOLATES this assumption. There is not equal variances within our dataset (homoskedsaticity). Our data also fails the normality assumption of the residuals because the p-value is &lt; 2.2e-16 after running the Shapiro Wilk normality test. The null hypothesis is that our residual distribution is normal, but we REJECT the null hypothesis due to the fact that the p-value is smaller than 0.05.</p>
+<p>Checking if our data passes the linearity assumption, there is sort of a linear relationship when we plot the residuals (positive slope) but definitely not a strong linear relationship.</p>
+<p>Next, I am going to recompute the regression results with robust standard errors (violations of homoskesaticity). We can see that once we corrected our standard errors, the new standard errors are bigger than the uncorrected standard errors due to the fact that we had to correct these standard errors due to the homoskesaticity violation. For NON-STEM majors, for every 1 non-graduate employed person increase, the number of graduate students employed increase by 3.482e-01 (nongrad_employed_c coefficient), and this result is SIGNIFICANT (p=1.947e-05). The other significant result is the Intercept: According to the linear regression model, the predicted number of employed graduate students who are NON-STEM majors is 8.741e4 when the amount of non-graduate students who are employed is at an average amount (Intercept coefficient, p= &lt; 2.2e-16). Before the robust standard error correction, another significant coefficient was &quot;nongrad_employed_c:is_STEMTRUE&quot; (p-value = 1.35e-08), this means that the slope of the number of non-graduate students employed on the number of graduate students employed is 3.295e-01 greater for STEM majors compared to NON-STEM majors and this was significant. After the robust standard error corrections though, this coefficient is no longer signficant (p=0.1755).</p>
+<p>The proportion of the variation in the outcome that my linear regression model explain is 0.6813. (R squared value). My model explains 68.13% of the variation in the outcome!</p>
+<pre class="r"><code>#Mean centering numeric variable within interaction: nongrad_employed 
+cgs$nongrad_employed_c &lt;- cgs$nongrad_employed - mean(cgs$nongrad_employed)
+
+#Linear Regression Model 
+fit&lt;-lm(grad_employed ~ nongrad_employed_c*is_STEM, data=cgs)
+summary(fit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = grad_employed ~ nongrad_employed_c * is_STEM, data = cgs)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -425249  -29664  -11968    2151  540086 
+## 
+## Coefficients:
+##                                 Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                    8.741e+04  1.129e+04   7.745 8.57e-13 ***
+## nongrad_employed_c             3.482e-01  2.883e-02  12.077  &lt; 2e-16 ***
+## is_STEMTRUE                    2.866e+04  1.460e+04   1.963   0.0513 .  
+## nongrad_employed_c:is_STEMTRUE 3.295e-01  5.515e-02   5.974 1.35e-08 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 91170 on 168 degrees of freedom
+## Multiple R-squared:  0.6813, Adjusted R-squared:  0.6756 
+## F-statistic: 119.7 on 3 and 168 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>#plotting the regression using ggplot
+cgs %&gt;% ggplot(aes(nongrad_employed_c, grad_employed, color= is_STEM))+geom_point()+geom_smooth(method = &#39;lm&#39;) + xlab(&quot;Non-Graduate Students Employed&quot;) + ylab(&quot;Graduate Students Employed&quot;) +theme_dark() + ggtitle(&quot;Linear Regression Graph&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="../../project/project_2_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code>#Checking Assumptions- Homoskesaticity 
+resids&lt;-fit$residuals
+fitvals&lt;-fit$fitted.values
+ggplot()+geom_point(aes(fitvals,resids))+geom_hline(yintercept=0, color=&#39;red&#39;)</code></pre>
+<p><img src="../../project/project_2_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
+<pre class="r"><code>#Checking Asumptions - Normality of Residuals 
+ggplot()+geom_histogram(aes(resids))</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="../../project/project_2_files/figure-html/unnamed-chunk-9-3.png" width="672" /></p>
+<pre class="r"><code>shapiro.test(resids) </code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  resids
+## W = 0.64461, p-value &lt; 2.2e-16</code></pre>
+<pre class="r"><code>#Checking Assumptions - Linearity 
+qqnorm(resids); qqline(resids, col=&#39;red&#39;)</code></pre>
+<p><img src="../../project/project_2_files/figure-html/unnamed-chunk-9-4.png" width="672" /></p>
+<pre class="r"><code>#Recompute regression results with robust standard errors
+library(sandwich); library(lmtest)</code></pre>
+<pre><code>## Loading required package: zoo</code></pre>
+<pre><code>## 
+## Attaching package: &#39;zoo&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     as.Date, as.Date.numeric</code></pre>
+<pre class="r"><code>summary(fit)$coef[,1:2] #these are the uncorrected standard errors </code></pre>
+<pre><code>##                                    Estimate   Std. Error
+## (Intercept)                    8.741196e+04 1.128582e+04
+## nongrad_employed_c             3.481454e-01 2.882625e-02
+## is_STEMTRUE                    2.865743e+04 1.459894e+04
+## nongrad_employed_c:is_STEMTRUE 3.294764e-01 5.515488e-02</code></pre>
+<pre class="r"><code>coeftest(fit, vcov = vcovHC(fit)) #these are the corrected standard errors </code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##                                  Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept)                    8.7412e+04 9.4645e+03  9.2358 &lt; 2.2e-16 ***
+## nongrad_employed_c             3.4814e-01 7.9191e-02  4.3963 1.947e-05 ***
+## is_STEMTRUE                    2.8657e+04 2.3102e+04  1.2405    0.2165    
+## nongrad_employed_c:is_STEMTRUE 3.2948e-01 2.4219e-01  1.3604    0.1755    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>#What proportion of the variation in the outcome does my model explain? 
+summary(fit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = grad_employed ~ nongrad_employed_c * is_STEM, data = cgs)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -425249  -29664  -11968    2151  540086 
+## 
+## Coefficients:
+##                                 Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                    8.741e+04  1.129e+04   7.745 8.57e-13 ***
+## nongrad_employed_c             3.482e-01  2.883e-02  12.077  &lt; 2e-16 ***
+## is_STEMTRUE                    2.866e+04  1.460e+04   1.963   0.0513 .  
+## nongrad_employed_c:is_STEMTRUE 3.295e-01  5.515e-02   5.974 1.35e-08 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 91170 on 168 degrees of freedom
+## Multiple R-squared:  0.6813, Adjusted R-squared:  0.6756 
+## F-statistic: 119.7 on 3 and 168 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>(sum((cgs$grad_employed-mean(cgs$grad_employed))^2)-sum(fit$residuals^2))/sum((cgs$grad_employed-mean(cgs$grad_employed))^2) #R^2 value, the propotion of the variation in the outcome that my model explains</code></pre>
+<pre><code>## [1] 0.6812586</code></pre>
+<p>Part 4: Bootstrapping After performing bootstrapped standard errors, we can see that the bootstrapped standard errors are not too different (they are about equal) to the ORIGINAL standard errors. Compared to the robust standard errors, the boostrapped standard error for the intercept is larger, but all of the other robust standard errors are larger than the boostrapped standard errors. The 95% confidence interval is [-1.497503, 2.35446], and this means that we FAIL TO REJECT the null hypothesis because O falls within this interval! The null hypothesis is that the number of non-graduates who are employed does not explain variation in the number of graduates who get employed and whether they are STEM or NON-STEM majors does not explain variation in the number of graduates who get employed either; the interaction between whether they are a STEM major or NON-STEM major with the number of non-graduates who are employed is not significant either. We FAIL to reject this null hypothesis ultimately - with the robust standard error corrections though, we were able to get a few significant results ultimately (discussed in the previous part).</p>
+<pre class="r"><code>#Bootstrapping 
+fit&lt;-lm(grad_employed ~ nongrad_employed_c*is_STEM, data=cgs) 
+resids&lt;-fit$residuals 
+fitted&lt;-fit$fitted.values 
+resid_resamp&lt;-replicate(5000,{
+new_resids&lt;-sample(resids,replace=TRUE) 
+cgs$new_y&lt;-fitted+new_resids 
+fit&lt;-lm(new_y~nongrad_employed_c*is_STEM,data=cgs) 
+coef(fit) 
+})
+
+#resampling the residuals 
+resid_resamp%&gt;%t%&gt;%as.data.frame%&gt;%summarize_all(sd) #bootstrapped standard errors </code></pre>
+<pre><code>##   (Intercept) nongrad_employed_c is_STEMTRUE nongrad_employed_c:is_STEMTRUE
+## 1    11170.41         0.02804286    14449.42                     0.05445237</code></pre>
+<pre class="r"><code>#resid_resamp %&gt;% t %&gt;% as.data.frame %&gt;% summarize(lower = quantile(x, 0.025), upper = quantile(x, 0.975)) - I am coding this out because it kept giving me an error when I was knitting!</code></pre>
+<p>Part 5: Logistic Regression In creating a binary variable, we are coding the number 1 for &quot;TRUE&quot; for the is_STEM variable, and number 0 for &quot;FALSE&quot; for is_STEM variable and putting these under a new column called &quot;STEM_STATUS.&quot; The predictor variable/dependent variable is going to be our STEM_STATUS variable (whether the students are STEM majors or NON-STEM majors), and our explanatory variables are going to be grad_employed_fulltime_yearround (number of graduate students who are employed fulltime around the year) and grad_median (median earnings of the graduate students who work fulltime).</p>
+<p>Logistic Regression Model Output: Controlling for grad_median (median earnings of fulltime employed graduate students), for every 1 graduate student fulltime employee increase, odds of being a stem major change/multiplied by a factor of e<sup>-2.704e</sup>-06 = 0.993 (0.7% decrease in odds) (grad_employed_fulltime_yearround coefficient). This result is not significant (p=0.0712). Controlling for grad_employed_fulltime_yearround, for every 1 dollar increase in the graduate median earnings, odds of being a stem major change by a factor of e^7.5247e-05 = 1.052 (5.2% increase in odds) (significant because p-value = 4.832e-08). For grad_median = 0 and for grad_employed_fulltime_yearround = 0, the log-odds of being a stem major is -4.9819e^-09, and the odds of being a stem major is e^(-4.9819) = 0.00686 (significant due to p value = 5.745e^-07). The predicted probability of being a STEM major of grad_median = 0 and grad_employed_fulltime_yearround = 0 is 0.0068133.</p>
+<p>Predicting the probabilities of being a STEM major: The probability of being a STEM major with a graduate median earning of $75,000 and the number of graduates being employed fulltime year round is 2,701 is 0.006802952.</p>
+<p>Compute and discussing the Accuracy, Sensitivity (TPR), Specificity (TNR), Precision (PPV), and AUC of my model &amp; Generate an ROC curve (plot) and calculate AUC : The accuracy is (44+87)/(172) = 0.76163. The sensitivity, the true positive rate is 87/104 = 0.8365. The specificity, the true negative rate is 44/68 = 0.64706. The precision (PPV), the proportion of classified STEM majors who actually are STEM majors is 87/111 = 0.78378. The AUC signifies how well we are predicting the STEM major status overall from grad_employed_fulltime_yearround and grad_median and that value is 0.7949661. This AUC can be categorized as a &quot;fair&quot; AUC. From the ROC plot and AUC generated, this means that the ability to predict whether someone was STEM or NON-STEM majors from the total number of graduate employment year round and from the graduate median earnings.</p>
+<pre class="r"><code>library(plotROC) 
+
+#creating a binary variable for is_STEM
+cgsnew &lt;- cgs %&gt;% mutate(STEM_STATUS=ifelse(is_STEM==&quot;TRUE&quot;,1,0))
+head(cgsnew)</code></pre>
+<pre><code>## # A tibble: 6 x 15
+##   major major_category grad_total grad_employed grad_unemployed nongrad_employed
+##   &lt;chr&gt; &lt;chr&gt;               &lt;int&gt;         &lt;int&gt;           &lt;int&gt;            &lt;int&gt;
+## 1 Cons… Industrial Ar…       9173          7098             681            73607
+## 2 Comm… Arts                53864         40492            2482           347166
+## 3 Hosp… Business            24417         18368            1465           145597
+## 4 Cosm… Industrial Ar…       5411          3590             316            29738
+## 5 Comm… Computers &amp; M…       9109          7512             466            43163
+## 6 Cour… Law &amp; Public …       1542          1008               0             6967
+## # … with 9 more variables: nongrad_unemployed &lt;int&gt;,
+## #   grad_employed_fulltime_yearround &lt;int&gt;, grad_median &lt;dbl&gt;,
+## #   nongrad_total &lt;int&gt;, nongrad_employed_fulltime_yearround &lt;int&gt;,
+## #   nongrad_median &lt;dbl&gt;, is_STEM &lt;lgl&gt;, nongrad_employed_c &lt;dbl&gt;,
+## #   STEM_STATUS &lt;dbl&gt;</code></pre>
+<pre class="r"><code>#Logistic Regression Model 
+fit1&lt;-glm(STEM_STATUS~grad_employed_fulltime_yearround + grad_median,data=cgsnew,family=binomial(link=&quot;logit&quot;))
+coeftest(fit1)</code></pre>
+<pre><code>## 
+## z test of coefficients:
+## 
+##                                     Estimate  Std. Error z value  Pr(&gt;|z|)    
+## (Intercept)                      -4.9819e+00  9.9647e-01 -4.9996 5.745e-07 ***
+## grad_employed_fulltime_yearround -2.7040e-06  1.4987e-06 -1.8042    0.0712 .  
+## grad_median                       7.5247e-05  1.3787e-05  5.4577 4.823e-08 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>#Predicted Probability of being a STEM major
+odds2prob&lt;-function(odds){odds/(1+odds)} 
+odds2prob(0.00686) #this is the probability of being a STEM major of grad_median = 0 and grad_employed_fulltime_yearround </code></pre>
+<pre><code>## [1] 0.006813261</code></pre>
+<pre class="r"><code>#Probability of being a STEM major with a graduate median earning of $75,000 and the number of graduates being employed fulltime year round is 2,701. 
+stemmajor1&lt;-data.frame(grad_median=75,000,grad_employed_fulltime_yearround=2701)
+predict(fit1,newdata=stemmajor1,type=&quot;response&quot;)</code></pre>
+<pre><code>##           1 
+## 0.006802952</code></pre>
+<pre class="r"><code>#Confusion Matrix for Logistic Regression 
+cgsnew$prob &lt;- predict(fit1, type = &quot;response&quot;)
+table(predict = as.numeric(cgsnew$prob &gt; 0.5 ), truth = cgsnew$STEM_STATUS)%&gt;%addmargins</code></pre>
+<pre><code>##        truth
+## predict   0   1 Sum
+##     0    44  17  61
+##     1    24  87 111
+##     Sum  68 104 172</code></pre>
+<pre class="r"><code>#Compute and discuss the Accuracy, Sensitivity (TPR), Specificity (TNR), Precision (PPV), and AUC of my model
+
+#Sensitivity 
+87/104 </code></pre>
+<pre><code>## [1] 0.8365385</code></pre>
+<pre class="r"><code>#Specificity 
+44/68</code></pre>
+<pre><code>## [1] 0.6470588</code></pre>
+<pre class="r"><code>#Precision
+87/111</code></pre>
+<pre><code>## [1] 0.7837838</code></pre>
+<pre class="r"><code>#Accuracy 
+(44+87)/(172)</code></pre>
+<pre><code>## [1] 0.7616279</code></pre>
+<pre class="r"><code>#AUC and ROC plot
+#ROC plot
+ROCplot &lt;- ggplot(cgsnew) + geom_roc(aes(d = STEM_STATUS, 
+    m = prob), n.cuts = 0)
+ROCplot</code></pre>
+<p><img src="../../project/project_2_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre class="r"><code>calc_auc(ROCplot) #calculating AUC</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.7949661</code></pre>
+<pre class="r"><code>#Density Plot of Logit/Log-Odds
+cgsnew$logit&lt;-predict(fit1,type=&quot;link&quot;)
+
+cgsnew%&gt;%ggplot()+geom_density(aes(logit,color=is_STEM,fill=is_STEM), alpha=.5)+
+  theme(legend.position=c(.75,.75))+geom_vline(xintercept=0)+xlab(&quot;logit (log-odds)&quot;)+
+  geom_rug(aes(logit,color=is_STEM)) + ggtitle(&quot;Density Plot of Log-Odds&quot;)</code></pre>
+<p><img src="../../project/project_2_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
+<p>Part 6: Perform a logistic regression predicting the same binary response variable from ALL of the rest of your variables</p>
+<p>The accuracy in predicitng our STEM_status variable is 0.78488 from grad_employed_fulltime_yearround, grad_median, grad_employed, nongrad_employed, nongrad_employed_fulltime_yearround, nongrad_median, grad_total, and nongrad_total. The sensitivity is 0.86538, the true positive rate of our data. The specificity is 0.661765, the true negative rate of our data. The precision is 0.79646, the proprotion of classified STEM majors who are actually STEM majors. The AUC is 0.8632636, which is a fairly decent AUC. The AUC is an indicator on how well we can predict STEM status majors from these explanatory variables mentioned above.</p>
+<pre class="r"><code>fit2&lt;-glm(STEM_STATUS~grad_employed_fulltime_yearround + grad_median + grad_employed + nongrad_employed +nongrad_employed_fulltime_yearround +nongrad_median +grad_total + nongrad_total ,data=cgsnew,family=binomial(link=&quot;logit&quot;))
+coeftest(fit2)</code></pre>
+<pre><code>## 
+## z test of coefficients:
+## 
+##                                        Estimate  Std. Error z value  Pr(&gt;|z|)
+## (Intercept)                         -4.8120e+00  1.3518e+00 -3.5597 0.0003712
+## grad_employed_fulltime_yearround     1.5827e-04  8.3673e-05  1.8915 0.0585528
+## grad_median                          1.5926e-05  2.2363e-05  0.7122 0.4763596
+## grad_employed                        6.0952e-05  7.9760e-05  0.7642 0.4447487
+## nongrad_employed                    -1.2449e-05  4.0164e-05 -0.3099 0.7566022
+## nongrad_employed_fulltime_yearround -7.3738e-05  3.4785e-05 -2.1198 0.0340196
+## nongrad_median                       7.9953e-05  3.3501e-05  2.3866 0.0170035
+## grad_total                          -1.2786e-04  4.1971e-05 -3.0463 0.0023170
+## nongrad_total                        4.4085e-05  2.1954e-05  2.0081 0.0446310
+##                                        
+## (Intercept)                         ***
+## grad_employed_fulltime_yearround    .  
+## grad_median                            
+## grad_employed                          
+## nongrad_employed                       
+## nongrad_employed_fulltime_yearround *  
+## nongrad_median                      *  
+## grad_total                          ** 
+## nongrad_total                       *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>#Accuracy, Sensitivity, Specificity, Precision, AUC
+cgsnew$prob2 &lt;- predict(fit2, type = &quot;response&quot;)
+table(predict = as.numeric(cgsnew$prob2 &gt; 0.5 ), truth = cgsnew$STEM_STATUS)%&gt;%addmargins</code></pre>
+<pre><code>##        truth
+## predict   0   1 Sum
+##     0    45  14  59
+##     1    23  90 113
+##     Sum  68 104 172</code></pre>
+<pre class="r"><code>#Accuracy 
+(45+90)/(172)</code></pre>
+<pre><code>## [1] 0.7848837</code></pre>
+<pre class="r"><code>#Sensitivity 
+90/104</code></pre>
+<pre><code>## [1] 0.8653846</code></pre>
+<pre class="r"><code>#Specificity 
+45/68</code></pre>
+<pre><code>## [1] 0.6617647</code></pre>
+<pre class="r"><code>#Precision 
+90/113</code></pre>
+<pre><code>## [1] 0.7964602</code></pre>
+<pre class="r"><code>#ROC &amp; AUC 
+ROCplot2 &lt;- ggplot(cgsnew) + geom_roc(aes(d = STEM_STATUS, 
+    m = prob2), n.cuts = 0)
+ROCplot</code></pre>
+<p><img src="../../project/project_2_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<pre class="r"><code>calc_auc(ROCplot2)</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.8632636</code></pre>
+<p>Part 6: The AUC is once again calculated here with the class_diag function, and it is the SAME as the previous method that we used. AUC is still 0.8632636. The accuracy, sensitivity, specificity, and precision here are also calculated with the class_diag function, and they are the same results as we have calculated above. The in sample accuracy is 0.7848837, sensitivity is 0.8653846, the specificity is 0.6617647, and the precision is 0.7964602 (these were interpretated above).</p>
+<p>Cross Validation &amp; Out of Class Diagnostics Performing 10-fold cross validation, the out of sample classification diagnostics have an accuracy of 0.71538, a sensitivity of 0.77738, a specificity of 0.591667, a precision of 0.7551, and an AUC of 0.81993. The AUC of the out of class diagnostics is a bit lower than the AUC of the in-sample metrics, but it is still a farily decent AUC. The accuracy, sensitivity, specificity, and precision are all lower in the out of class diagnostics compared to the in-sample metrics that we calculated before. A lower AUC means that we are overfitting our data possibly!</p>
+<pre class="r"><code>library(knitr)
+opts_chunk$set(fig.align=&quot;center&quot;, fig.height=5, message=FALSE, warning=FALSE, fig.width=8, tidy.opts=list(width.cutoff=60),tidy=TRUE)
+
+#HERE&#39;S THE CLASSIFICAITON DIAGNOSTICS FUNCTION
+class_diag&lt;-function(probs,truth){
+  tab&lt;-table(factor(probs&gt;.5,levels=c(&quot;FALSE&quot;,&quot;TRUE&quot;)),truth)
+  acc=sum(diag(tab))/sum(tab)
+  sens=tab[2,2]/colSums(tab)[2]
+  spec=tab[1,1]/colSums(tab)[1]
+  ppv=tab[2,2]/rowSums(tab)[2]
+  f1=2*(sens*ppv)/(sens+ppv)
+
+  if(is.numeric(truth)==FALSE &amp; is.logical(truth)==FALSE){
+    truth&lt;-as.numeric(truth)-1}
+  
+  ord&lt;-order(probs, decreasing=TRUE)
+  probs &lt;- probs[ord]; truth &lt;- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup&lt;-c(probs[-1]&gt;=probs[-length(probs)], FALSE)
+  TPR&lt;-c(0,TPR[!dup],1); FPR&lt;-c(0,FPR[!dup],1)
+  
+  n &lt;- length(TPR)
+  auc&lt;- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,f1,auc)
+}
+
+#Accuracy, sensitivity, specificity, precision, &amp; AUC
+class_diag(cgsnew$prob2, cgsnew$STEM_STATUS)</code></pre>
+<pre><code>##         acc      sens      spec       ppv        f1       auc
+## 1 0.7848837 0.8653846 0.6617647 0.7964602 0.8294931 0.8632636</code></pre>
+<pre class="r"><code>#K fold - CV 
+set.seed(1234)
+k = 10
+
+data &lt;- cgsnew[sample(nrow(cgsnew)), ]
+folds &lt;- cut(seq(1:nrow(cgsnew)), breaks = k, labels = F)
+
+diags &lt;- NULL
+for (i in 1:k) {
+    cgsnew &lt;- data[folds != i, ]
+    test &lt;- data[folds == i, ]
+    truth &lt;- test$STEM_STATUS
+    
+    fit2 &lt;- glm(STEM_STATUS ~ grad_employed_fulltime_yearround + grad_median + grad_employed + nongrad_employed +nongrad_employed_fulltime_yearround +nongrad_median +grad_total + nongrad_total, data = cgsnew, family = &quot;binomial&quot;)
+    
+    probs &lt;- predict(fit2, newdata = test, type = &quot;response&quot;)
+    
+    diags &lt;- rbind(diags, class_diag(probs, truth))
+}
+
+summarize_all(diags, mean)</code></pre>
+<pre><code>##         acc      sens      spec       ppv      f1       auc
+## 1 0.7428105 0.8293332 0.6184127 0.7651407 0.78666 0.8398607</code></pre>
+<p>Part 6: Performing LASSO The most predictive variables (the variables that can predict whether the students are STEM majors or NON-STEM majors the most) are grad_median, nongrad_median, and the nongrad_total (these are the only variables that are retained).</p>
+<p>Perform 10-fold CV using only the variables lasso selected &amp; compare model’s out-of-sample AUC to that of your logistic regressions above: In performing the 10 fold cross validation using only the variables that LASSO selected, the accuracy is 0.75606, the sensitivity is 0.77857, the specificity is 0.72048, the precision is 0.78857, and the AUC is 0.8082143. Compared to the out-of-sample classification diagnostics above (accuracy of 0.71538, a sensitivity of 0.77738, a specificity of 0.591667, a precision of 0.7551, and an AUC of 0.81993), the 10-fold CV using only the variables lasso selected gave us a bit lower of an AUC, although not by much. There is NOT much of a change at all, so this means that the original model was NOT overfitting that much! The AUC is overall still decent (&quot;fair&quot;) by classification.</p>
+<pre class="r"><code># Performing LASSO
+library(glmnet)
+y &lt;- as.matrix(cgsnew$is_STEM)
+x &lt;- model.matrix(is_STEM ~ grad_employed_fulltime_yearround + 
+    grad_median + grad_employed + nongrad_employed + nongrad_employed_fulltime_yearround + 
+    nongrad_median + grad_total + nongrad_total, data = cgsnew)[, 
+    -1]
+head(x)</code></pre>
+<pre><code>##   grad_employed_fulltime_yearround grad_median grad_employed nongrad_employed
+## 1                            29892       76000         37639           117087
+## 2                            91011       70000        123279           187311
+## 3                            98736       58000        144858           100814
+## 4                            59620       61000         86566           122937
+## 5                            10727       92000         13042            13729
+## 6                             8095      100000          9299             6692
+##   nongrad_employed_fulltime_yearround nongrad_median grad_total nongrad_total
+## 1                               89592          60000      47029        159438
+## 2                              123316          63000     142285        234752
+## 3                               68067          43000     192495        140128
+## 4                               89949          50000     166626        221750
+## 5                               11755          78000      17051         20152
+## 6                                5415          98000      13656         12555</code></pre>
+<pre class="r"><code>cv &lt;- cv.glmnet(x, y, family = &quot;binomial&quot;)
+cv &lt;- cv.glmnet(x, y, family = &quot;binomial&quot;)
+lasso &lt;- glmnet(x, y, family = &quot;binomial&quot;, lambda = cv$lambda.1se)
+coef(lasso)</code></pre>
+<pre><code>## 9 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                                                s0
+## (Intercept)                         -2.924714e+00
+## grad_employed_fulltime_yearround     .           
+## grad_median                          3.635603e-05
+## grad_employed                        .           
+## nongrad_employed                     .           
+## nongrad_employed_fulltime_yearround  .           
+## nongrad_median                       1.254686e-05
+## grad_total                           .           
+## nongrad_total                       -5.540996e-07</code></pre>
+<pre class="r"><code># Perform 10-fold CV using only the variables lasso selected
+set.seed(1234)
+k = 10
+
+data &lt;- cgsnew %&gt;% sample_frac
+folds &lt;- ntile(1:nrow(data), n = 10)
+
+diags &lt;- NULL
+for (i in 1:k) {
+    train &lt;- data[folds != i, ]
+    test &lt;- data[folds == i, ]
+    truth &lt;- test$STEM_STATUS
+    
+    fit3 &lt;- glm(STEM_STATUS ~ grad_median + nongrad_median + 
+        nongrad_total, data = cgsnew, family = &quot;binomial&quot;)
+    probs &lt;- predict(fit3, newdata = test, type = &quot;response&quot;)
+    
+    diags &lt;- rbind(diags, class_diag(probs, truth))
+}
+
+diags %&gt;% summarize_all(mean)</code></pre>
+<pre><code>##         acc      sens      spec       ppv        f1       auc
+## 1 0.7858333 0.8336883 0.7214286 0.8137157 0.8158828 0.8445476</code></pre>
+</div>
+
+            
+        <hr>         <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div> 
+            </div>
+          </div>
+
+   <hr>  <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div> 
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="../../js/docs.min.js"></script>
+<script src="../../js/main.js"></script>
+
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

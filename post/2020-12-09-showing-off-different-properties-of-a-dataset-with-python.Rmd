@@ -1,0 +1,63 @@
+---
+title: Showing off different properties of a dataset with python
+author: Amy Vo
+date: '2020-12-09'
+slug: showing-off-different-properties-of-a-dataset-with-python
+categories: []
+tags: []
+description: ''
+---
+
+In this post, I'll use python to show off different properties of a dataset.
+
+```{R}
+quakes <- quakes
+```
+
+We can use python to find the mean of the numeric values in quakes
+```{python}
+import numpy as np
+#The mean of the latitudes is
+r.quakes.lat.mean()
+#The mean of the longitudes is
+r.quakes.long.mean()
+#The mean of the depths is
+r.quakes.depth.mean()
+#The mean of the magnitudes is
+r.quakes.mag.mean()
+```
+
+We can use python to find the median of the numeric values in quakes
+```{python}
+#The median of the latitudes is
+r.quakes.lat.median()
+#The median of the longitudes is
+r.quakes.long.median()
+#The median of the depths is
+r.quakes.depth.median()
+#The median of the magnitudes is
+r.quakes.mag.median()
+```
+
+We can use python to find the standard deviation of the numeric values in quakes
+```{python}
+#The standard deviation of the latitudes is
+np.std(r.quakes.lat)
+#The standard deviation of the longitudes is
+r.quakes.long.median()
+#The standard deviation of the depths is
+r.quakes.depth.median()
+#The standard deviation of the magnitudes is
+r.quakes.mag.median()
+```
+
+We can also find properties of datasets related to other properties
+```{python}
+# The median of the magnitudes of quakes with longitude greater than 175
+r.quakes[r.quakes.long>175].mag.median()
+
+# The mean of the latitudes of quakes with depth less than 200
+r.quakes[r.quakes.depth<200].lat.mean()
+```
+
+![](/post/2020-12-09-showing-off-different-properties-of-a-dataset-with-python_files/fijipic.png)

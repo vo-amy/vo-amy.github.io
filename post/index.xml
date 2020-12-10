@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on My Website</title>
+    <link>/post/</link>
+    <description>Recent content in Posts on My Website</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Wed, 09 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Showing off different properties of a dataset with python</title>
+      <link>/post/2020/12/09/showing-off-different-properties-of-a-dataset-with-python/</link>
+      <pubDate>Wed, 09 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2020/12/09/showing-off-different-properties-of-a-dataset-with-python/</guid>
+      <description>In this post, I&#39;ll use python to show off different properties of a dataset.
+quakes &amp;lt;- quakes We can use python to find the mean of the numeric values in quakes
+import numpy as np #The mean of the latitudes is r.quakes.lat.mean() #The mean of the longitudes is ## -20.642749999999999 r.quakes.long.mean() #The mean of the depths is ## 179.46202 r.quakes.depth.mean() #The mean of the magnitudes is ## 311.37099999999998 r.quakes.mag.mean() ## 4.</description>
+    </item>
+    
+  </channel>
+</rss>

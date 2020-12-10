@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Amy Vo" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="../../img/favicon.ico">
+    <title>Project 1</title>
+    <meta name="generator" content="Hugo 0.79.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../../css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="../../"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="../../post/">BLOG</a></li>
+        
+        <li><a href="../../projects/">PROJECTS</a></li>
+        
+        <li><a href="../../resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="../../project/project1/">Project 1</a></strong>
+          </h3>
+        </div>
+ 
+<div class="blog-title">
+          <h4>
+         January 1, 0001 
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<pre class="r"><code># Installing required packages
+library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
+## ✓ tibble  3.0.3     ✓ dplyr   1.0.2
+## ✓ tidyr   1.1.1     ✓ stringr 1.4.0
+## ✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
+<pre><code>## ── Conflicts ──────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(&quot;fivethirtyeight&quot;)
+install.packages(&quot;fivethirtyeight&quot;, repos = &quot;http://cran.us.r-project.org&quot;)</code></pre>
+<pre><code>## Installing package into &#39;/stor/home/amv3428/R/x86_64-pc-linux-gnu-library/3.6&#39;
+## (as &#39;lib&#39; is unspecified)</code></pre>
+<pre class="r"><code>data(&quot;trump_approval_poll&quot;)
+data(&quot;trump_lawsuits&quot;)</code></pre>
+<p>Introduction In the &quot;trump_approval_poll&quot;, dataset, the variables include subgroup, start_date, end_date, pollster, grade, sample_size, population, weight, approve, disapprove, adjusted_approve, adjusted_disapprove, multiversions, tracking, url, poll_id, question_id, created_date, and timestamp. In the &quot;trump_lawsuits&quot; dataset, the variables are docket_number, date_filed, case_name, plaintiff, defendent, current_location, previous_location, jurisdiction, nature, trump_category, capacity, type, issue, docket_orig, and status. The purpose of our final dataset is to compare the total monthly lawsuits filed against Trump by the monthly average approval and disapproval rates. The common variable between the two datasets is the date(month), and our final different variables are average monthly approval, average monthly disapproval, number cases for the date filed, and category case (which we created by mutate), mean approval adjusted rates, and mean disapproval adjusted rates. This information is interesting to me because I was curious on of Trump's approval ratings have a correlation with the number of court cases that are filed against him. I wanted to know whether or not people care too much about the lawsuits against Trump and whether it would affect his approval rating or not.</p>
+<pre class="r"><code># Renaming the datasets to make them easier
+tap &lt;- trump_approval_poll
+tl &lt;- trump_lawsuits
+
+# Deleting columns (we don&#39;t need these)
+tl &lt;- tl %&gt;% select(-docket_number, -plaintiff, -defendant, -current_location, -previous_location, -judge, -docket_orig, -status, - nature)
+
+#Filters to make sure the data is correct
+tl &lt;- tl %&gt;% filter((type == 1) | (type == 2))
+
+# Organizing data by year-month acsending
+tl &lt;- tl %&gt;% arrange(date_filed) %&gt;% na.omit()
+head(tl)</code></pre>
+<pre><code>## # A tibble: 6 x 7
+##   date_filed case_name        jurisdiction trump_category capacity type  issue  
+##   &lt;date&gt;     &lt;fct&gt;                   &lt;dbl&gt; &lt;fct&gt;          &lt;fct&gt;    &lt;fct&gt; &lt;fct&gt;  
+## 1 2016-03-15 Michaels v. Ses…            1 2              2        1     Whitak…
+## 2 2016-08-19 United States v…            1 2              5        1     Pardons
+## 3 2016-08-25 Batalla Vidal v…            1 3              2        2     DACA   
+## 4 2017-01-17 Zervos v. Trump             2 2              1        2     Defama…
+## 5 2017-01-23 CREW v. Trump               1 2              1        2     Emolum…
+## 6 2017-06-12 The District of…            1 2              1        2     Emolum…</code></pre>
+<p>I first renamed the data to make them easier to pull out, and then I deleted the columns I believe that I do not need within the trump_lawsuts for the final dataset. I used filter() to make sure that the data looks right by pulling out &quot;type&quot; out to make sure that there are only type 1 and 2 cases. This is just to make sure that the data is correct and there are no extra numbers within the type variable. I then used arrange() to organize the date filed variable in ascending order while using na.omt() to delete all the NA's within the date filed variable.</p>
+<pre class="r"><code># Deleting columns (we don&#39;t need these)
+tap &lt;- tap %&gt;% select(-subgroup, - start_date, -pollster, -population, -weight, -multiversions, -tracking, -url, -poll_id, -question_id, -created_date, -timestamp)
+
+# Organizing data by year-month acsending
+tap &lt;- tap %&gt;% arrange(end_date) %&gt;% na.omit()
+head(tap)</code></pre>
+<pre><code>## # A tibble: 6 x 7
+##   end_date   grade sample_size approve disapprove adjusted_approve
+##   &lt;date&gt;     &lt;ord&gt;       &lt;int&gt;   &lt;dbl&gt;      &lt;dbl&gt;            &lt;dbl&gt;
+## 1 2017-01-22 B-           1992      46         37             42.7
+## 2 2017-01-22 B            1500      45         45             46.1
+## 3 2017-01-22 B            1500      45         45             45.4
+## 4 2017-01-22 B-           1992      46         37             43.8
+## 5 2017-01-23 B            1500      45         46             46.1
+## 6 2017-01-23 B            1500      45         46             45.4
+## # … with 1 more variable: adjusted_disapprove &lt;dbl&gt;</code></pre>
+<p>Then I moved on to deleting the columns for trump_approval_poll dataset, and I organized the end_date by ascending order using arrange(). I chose the end_date to keep as the variable in the final dataset instead of start_date because the end_date would have all the accurate approval and disapproval ratings, waiting for the response from everyone. The start date would be too early to have an accurate rating since not all people may have inputed their approval/disapproval ratings.</p>
+<pre class="r"><code># Joins tl and tap together
+jds &lt;- tl %&gt;% right_join(tap, by = c(&quot;date_filed&quot; = &quot;end_date&quot;))
+
+#Creates a dataset that containes the number of cases for each day
+jds_court_count &lt;- jds %&gt;% count(date_filed)
+
+#Renames the n column to &quot;number_cases&quot;
+jds_court_count &lt;- jds_court_count %&gt;% rename(number_cases = n)
+
+#Creates a categorical for the number cases
+jds_court_count &lt;- jds_court_count %&gt;% mutate(category_case = ifelse(number_cases &gt; 8, (ifelse(number_cases &gt; 15, &quot;High&quot;, &quot;Medium&quot;)), &quot;Low&quot;))
+
+#Creates columns for each mean
+jds &lt;- jds %&gt;% group_by(date_filed) %&gt;% summarize(mean_approve = mean(approve), mean_disapprove = mean(disapprove), mean_adjusted_approve = mean(adjusted_approve), mean_adjusted_disapprove = mean(adjusted_disapprove))</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre class="r"><code>#Summary statistics for overall data (before grouping by categorical variable)
+jds_summary &lt;- jds %&gt;% summarize(&quot;Mean: mean_approve&quot; = mean(mean_approve), &quot;SD: mean_approve&quot; = sd(mean_approve), &quot;N_distinct: mean_approve&quot; = n_distinct(mean_approve), &quot;Var: mean_approve&quot; = var(mean_approve), &quot;Min: mean_approve&quot; = min(mean_approve), &quot;Max: mean_approve&quot; = max(mean_approve), &quot;Median: mean_approve&quot; = median(mean_approve), &quot;Cor: mean_approve, mean_adjusted_approve&quot; = cor(mean_approve, mean_adjusted_approve))
+
+#joins the datasets so the nubmer of cases is avaliable
+jds &lt;- jds %&gt;% right_join(jds_court_count)</code></pre>
+<pre><code>## Joining, by = &quot;date_filed&quot;</code></pre>
+<pre class="r"><code>#Summary statistics for grouped data
+jds_group_summary &lt;- jds %&gt;% group_by(category_case) %&gt;% summarize(&quot;Mean: mean_approve&quot; = mean(mean_approve), &quot;Mean: mean_disapprove&quot; = mean(mean_disapprove), &quot;Mean: mean_adjusted_approve&quot; = mean(mean_adjusted_approve), &quot;Mean: mean_adjusted_disapprove&quot; = mean(mean_adjusted_disapprove), &quot;SD: mean_approve&quot; = sd(mean_approve), &quot;SD: mean_disapprove&quot; = sd(mean_disapprove), &quot;SD: mean_adjusted_approve&quot; = sd(mean_adjusted_approve), &quot;SD: mean_adjusted_disapprove&quot; = sd(mean_adjusted_disapprove)) </code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre class="r"><code>glimpse(jds)</code></pre>
+<pre><code>## Rows: 567
+## Columns: 7
+## $ date_filed               &lt;date&gt; 2017-01-22, 2017-01-23, 2017-01-24, 2017-01…
+## $ mean_approve             &lt;dbl&gt; 45.50000, 45.00000, 47.04444, 44.51667, 46.6…
+## $ mean_disapprove          &lt;dbl&gt; 41.00000, 46.00000, 44.30000, 42.36667, 46.7…
+## $ mean_adjusted_approve    &lt;dbl&gt; 44.48786, 45.74678, 46.11489, 44.26766, 45.5…
+## $ mean_adjusted_disapprove &lt;dbl&gt; 41.17792, 44.17749, 43.54907, 41.94113, 45.7…
+## $ number_cases             &lt;int&gt; 4, 2, 9, 12, 7, 5, 7, 7, 7, 12, 7, 13, 5, 9,…
+## $ category_case            &lt;chr&gt; &quot;Low&quot;, &quot;Low&quot;, &quot;Medium&quot;, &quot;Medium&quot;, &quot;Low&quot;, &quot;Lo…</code></pre>
+<p>I now joined the two datasets together using right_join to preserve the data because when I tried inner_join, it deleted way too many observations and datapoints. The right_join returns all rows from the right dataset and all the columns from the left dataset and right dataset. In joining the datasets, date_filed is the common variable between the two datasets. I also created a dataset that contains the number of cases filed against Trump per date given. I renamed the &quot;n&quot; variable to &quot;number_cases&quot; because this variable stood for the actually number of cases filed against President Trump. I now used mutate() in order to create a new categorical variable that indicates the category of the case based on the number of cases filed against Trump. Lee than 8 cases or less filed means that this is &quot;low,&quot; 8-14 cases means that this is &quot;medium&quot;, and 15 and higher cases filed means that this is &quot;high.&quot; Creating columns for each mean of the numeric variable (mean_approve, mean_disapprove, mean_adjusted_approve, and mean_adjusted_disapprove), I used &quot;group_by&quot; the date_filed and the summerize function to find the means of the numeric variables just listed. I also found the summary statistics for the overall data before grouping by the categorical varaible (category_case). I found the mean, standard deviation, variance, minimum, maximum, and median of the mean_approve. I also found the correlation between the mean_approve and the mean_adjusted_approve values.</p>
+<p>The &quot;number cases&quot; variable is number of cases filed against Trump by the date that is filed.</p>
+<p>I joined the dataset again so that I could combine the categorical variables with the set that contained the numeric variables, so now jds has the categorical variable (category_case). I now found the summary statistics for the grouped data, grouping by the category_case. I found the mean of mean_approve, mean of mean_disapprove, mean of mean_adjusted_approve, standard deviation of mean_approve, standard deviation of mean_disapprove, standard deviation of mean_adjusted_approve, and standard deviation of mean_adjusted_disapprove.</p>
+<pre class="r"><code>#Prints out the summary statistics (not grouped)
+glimpse(jds_summary)</code></pre>
+<pre><code>## Rows: 1
+## Columns: 8
+## $ `Mean: mean_approve`                       &lt;dbl&gt; 41.33347
+## $ `SD: mean_approve`                         &lt;dbl&gt; 2.715785
+## $ `N_distinct: mean_approve`                 &lt;int&gt; 502
+## $ `Var: mean_approve`                        &lt;dbl&gt; 7.37549
+## $ `Min: mean_approve`                        &lt;dbl&gt; 35.3
+## $ `Max: mean_approve`                        &lt;dbl&gt; 48.1
+## $ `Median: mean_approve`                     &lt;dbl&gt; 41.36667
+## $ `Cor: mean_approve, mean_adjusted_approve` &lt;dbl&gt; 0.9706319</code></pre>
+<p>This is the summary statistics of the dataset before grouping by.</p>
+<pre class="r"><code>#untidying the data 
+jds_group_summary &lt;- jds_group_summary %&gt;% pivot_wider(names_from = &quot;category_case&quot;, values_from = &quot;Mean: mean_approve&quot;)
+
+#retidying the data 
+jds_group_summary &lt;- jds_group_summary %&gt;% pivot_longer(c(&quot;Low&quot;,&quot;Medium&quot;,&quot;High&quot;), names_to =&quot;Category&quot;, values_to=&quot;Mean: mean_approve&quot;) %&gt;% na.omit
+
+#Prints out the summary statistics (grouped)
+glimpse(jds_group_summary)</code></pre>
+<pre><code>## Rows: 3
+## Columns: 9
+## $ `Mean: mean_disapprove`          &lt;dbl&gt; 54.01297, 54.33130, 53.71438
+## $ `Mean: mean_adjusted_approve`    &lt;dbl&gt; 40.18516, 40.67503, 40.54019
+## $ `Mean: mean_adjusted_disapprove` &lt;dbl&gt; 53.82832, 53.44112, 53.47383
+## $ `SD: mean_approve`               &lt;dbl&gt; 1.99194, 2.85154, 2.54402
+## $ `SD: mean_disapprove`            &lt;dbl&gt; 2.007311, 2.965887, 2.751769
+## $ `SD: mean_adjusted_approve`      &lt;dbl&gt; 2.166312, 2.617373, 2.441732
+## $ `SD: mean_adjusted_disapprove`   &lt;dbl&gt; 2.158180, 2.820497, 2.638898
+## $ Category                         &lt;chr&gt; &quot;High&quot;, &quot;Low&quot;, &quot;Medium&quot;
+## $ `Mean: mean_approve`             &lt;dbl&gt; 40.72114, 41.31030, 41.38346</code></pre>
+<p>This is the summary statistics for the dataset that is grouped by category_case. The summary stastistics used was mentioned in the previous paragraph.</p>
+<pre class="r"><code>#Creates a correlation matrix
+cormat &lt;- jds %&gt;% na.omit %&gt;% select_if(is.numeric) %&gt;% cor(use = &quot;pair&quot;)
+
+#Tidying correlation matrix
+tidycor &lt;- cormat %&gt;% as.data.frame %&gt;% rownames_to_column(&quot;var1&quot;) %&gt;% pivot_longer(-1, names_to = &quot;var2&quot;, values_to = &quot;correlation&quot;)
+
+#Visualizing correlation matrix
+tidycor %&gt;% ggplot(aes(var1, var2, fill = correlation)) + geom_tile() + scale_fill_gradient2(low = &quot;red&quot;, mid = &quot;white&quot;, high = &quot;blue&quot;) + geom_text(aes(label = round(correlation, 2)), color = &quot;black&quot;, size = 4) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + coord_fixed()</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-7-1.png" width="672" /> I created a correlation between all of the numeric variables using select(is.numeric). I then tidied the correlation. From the correlation matrix, it is evident that there is no correlation between the number of cases filed against Trump and the mean approval, mean disapproval rates, mean adjusted approval, and mean disapproval rates. Although not much, there is a bit more of a correlation between the mean disapproval rates to the number of cases. The highest correlation we got (which is not even high) is the correlation between the number of cases filed against Trump and the mean disapproval rate (-0.11). There is somewhat of a difference in correlation between the adjusted approval and disapproval values and the non-adjusted values according to the correlation coefficents. There is a very very weak negative correlation (basically no correlation) between the mean disapproval ratings and the mean adjusted approval ratings to the number of cases filed against Trump.</p>
+<pre class="r"><code>#Dot ggplot
+ggplot(data = jds, aes(x = mean_approve, y = mean_disapprove)) + geom_point(size = 4, aes(color = number_cases)) + theme_dark() + ggtitle(&quot;Mean Disapproval vs Mean Approval for Number of Cases&quot;) + ylab(&quot;Mean Disapproval&quot;) + xlab(&quot;Mean Approval&quot;)</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-8-1.png" width="672" /> In the process of creating the ggplot, I mapped the mean approval on the x-axis and the mean disapproval on the y-axis while coloring the data by the number of cases. I renamed the title and the axis labels, and then I changed the theme to make it dark. I used geom_point to add in the points of the cases at each mean_approval vs mean_disapproval ratings. Between mean approval and mean disapproval there is a clear negative correlation. Although there was no correlation between the day the number of cases that are filed against Trump and any on the other variables, there is some darker color and medium color at the top of the graph, indicating there are some higher disapproval ratings on the higher number of cases and medium number of cases (there is still no correlation between the approval ratings/disapproval ratings with the number of cases though).</p>
+<pre class="r"><code>#Bar ggplot
+ggplot(jds, aes(x = number_cases, y = mean_approve, fill = category_case)) + geom_bar(stat = &quot;summary&quot;, position = &quot;dodge&quot;) + theme_bw() + scale_y_continuous(breaks = seq(0, 50, 5)) + ggtitle(&quot;Mean Approval vs Number of Cases by Category Case&quot;) + ylab(&quot;Mean Approval&quot;) + xlab(&quot;Number of Cases&quot;)</code></pre>
+<pre><code>## No summary function supplied, defaulting to `mean_se()`</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-9-1.png" width="672" /> I now plotted a ggplot and using geom_bar to make a bar graph with the number cases on the x-axis and the mean approval rating on the y-axis. I filled the bar graph by the category case and differentiated by the colors of the different cases (high = red, low = green, medium = blue). There is also no correlation between the category case and mean approval. I added the tick marks using scale_y_continuous(breaks) and I also changed the theme once again to theme_bw(). This graph shows the clear distinctions between our categorical values. Again, there is no correlation between number of cases and mean approval. The day that the number of cases filed against in the high, low, and medium categories seem to have the same mean approval rates for Trump on average.</p>
+<pre class="r"><code>#Determining the number of clusters
+wss &lt;- vector()
+
+for(i in 1:10) {
+  temp &lt;- jds %&gt;% select(mean_adjusted_approve, mean_adjusted_disapprove, mean_approve, mean_disapprove, number_cases) %&gt;% kmeans(i)
+  wss[i] &lt;- temp$tot.withinss
+}
+
+ggplot() + geom_point(aes(x = 1:10, y = wss)) + geom_path(aes(x = 1:10, y = wss)) + xlab(&quot;clusters&quot;) + scale_x_continuous(breaks = 1:10)</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>I determined the number of clusters using the for loop() function. I ended up using 1 cluster for my dataset according to the for loop. I calculated the kmean for 1-10 clusters, and the graph shows that the number of cluster with the highest WSS is 1 cluster, which is what we will use for our dataset.</p>
+<pre class="r"><code>#Getting the cluster means
+kmeans1 &lt;- jds[2:6] %&gt;% scale %&gt;% kmeans(1)
+kmeans1</code></pre>
+<pre><code>## K-means clustering with 1 clusters of sizes 567
+## 
+## Cluster means:
+##   mean_approve mean_disapprove mean_adjusted_approve mean_adjusted_disapprove
+## 1  6.77099e-16    9.694381e-16          1.167594e-15            -1.085943e-15
+##   number_cases
+## 1 3.563679e-16
+## 
+## Clustering vector:
+##   [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+##  [38] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+##  [75] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## [112] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## [149] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## [186] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## [223] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## [260] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## [297] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## [334] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## [371] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## [408] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## [445] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## [482] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## [519] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## [556] 1 1 1 1 1 1 1 1 1 1 1 1
+## 
+## Within cluster sum of squares by cluster:
+## [1] 2830
+##  (between_SS / total_SS =   0.0 %)
+## 
+## Available components:
+## 
+## [1] &quot;cluster&quot;      &quot;centers&quot;      &quot;totss&quot;        &quot;withinss&quot;     &quot;tot.withinss&quot;
+## [6] &quot;betweenss&quot;    &quot;size&quot;         &quot;iter&quot;         &quot;ifault&quot;</code></pre>
+<p>Because we only have one cluster, all of our elements are in cluster 1. The cluster means are also listed above. The value attached to each of the numeric variable is the mean of every single one of the variable (mean approve, mean disapprove, mean adjusted approve, mean adjusted approve, and number of cases).</p>
+<pre class="r"><code>#Graphing the cluster
+kmeansclust &lt;- jds %&gt;% mutate(cluster = as.factor(kmeans1$cluster))
+kmeansclust %&gt;% ggplot(aes(mean_adjusted_approve, mean_adjusted_disapprove, mean_approve, mean_disapprove, number_cases, color = cluster)) + geom_point()</code></pre>
+<pre><code>## Warning: Duplicated aesthetics after name standardisation:</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-12-1.png" width="672" /> Because there is only one cluster, the graph looks very similar to the ggplot that we had (using geom_point). Because there is only one cluster, the data points can't be grouped in a meaningful way. The plot just shows us the correlation between different variables. We can see that this graph shows a negative correlation between mean adjusted disapproval and mean adjusted approval.</p>
+
+            
+        <hr>         <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div> 
+            </div>
+          </div>
+
+   <hr>  <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div> 
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="../../js/docs.min.js"></script>
+<script src="../../js/main.js"></script>
+
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

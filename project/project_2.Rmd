@@ -1,0 +1,443 @@
+---
+title: "project_2"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+## R Markdown
+# Amy Vo UT EID; amv3428
+
+```{r}
+# Downloading necessary libraries
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+```
+The dataset that I am using contains information about college graduate and nongraduate students and their employment status based on their major. After tidying up the dataset, it has 11 variables and 172 observations. The major variable contains a variety of majors chosen by students. The major_category variable contains the categories that each major belongs to. The grad_total variable is the total number of graduate students with each major. The grad_employed variable is the number of graduate students who are employed. The grad_employed_fulltime_yearround variable is the number of graduate students are are employed full-time. The grad_unemployed variable is the number of graduate students who are unemployed. The nongrad_total variable is the total number of nongraduate students. The nongrad_employed variable is the number of nongraduate students who are employed. The nongrad_employed_fulltime_yearround variable is the number of nongraduate students employed full-time. The nongrad_unemployed variable is the number of nongraduate students who are unemployed. The is_STEM variable is a binaray variable that indicates whether a paricular major is a STEM major or not. The grad_median variable is the median earnings of graduate students who work full time year round. The nongrad_median variable is the median earnings of non-graduate students who work full time year round. The grad_total is the total number of students with a major, and the non-grad total is the total number of non-graduate students with a defined major. 
+
+```{r}
+# Tidying up the college_grad_students dataset
+# Putting the dataset into a variable that's easier to use
+library("fivethirtyeight")
+install.packages("fivethirtyeight", repos = "http://cran.us.r-project.org")
+cgs <- college_grad_students
+
+# Removing unnecessary columns from the dataset
+cgs <- subset(cgs, select = -c(major_code, grad_sample_size, grad_p25th, grad_p75th, nongrad_p25th, nongrad_p75th, grad_share, grad_premium, grad_unemployment_rate, nongrad_unemployment_rate))
+
+# Creating a binomial categorical variable based of whether a major is STEM or not
+cgs <- cgs %>% mutate(is_STEM = ifelse(((major_category == "Agriculture & Natural Resources") | (major_category == "Biology & Life Science") | (major_category == "Computers & Mathematics") | (major_category == "Engineering") | (major_category == "Health") | (major_category == "Physical Sciences") | (major_category == "Psychology & Social Work") | (major_category == "Social Science")), TRUE, FALSE))
+
+# Rearranging the columns
+cgs <- cgs %>% relocate(grad_unemployed, .after = grad_employed) %>% relocate(nongrad_employed, .after = grad_unemployed) %>% relocate(nongrad_unemployed, .after = nongrad_employed)
+cgs <- cgs[-c(41), ]
+
+# Showing the new college_grad_students dataframe
+glimpse(cgs)
+```
+The multivariate normality assumption is hard to eyeball, but we can still test whether there is homogenity of the covariance matrices as one of the assumptions for the MANOVA testing! We are also going to assume that this data has met the random sample and independent observations assumptions, the linear relationships among dependent variables, no extreme univariate or multivariate outliers, and no multicollinearity.
+One of the assumptions for MANOVA is the homogeniety of the covariance matrices, and after performing a variance-covariance matrix here for the major categories of the students we can see that there are distinct differences between the graduate employment, graduate umemployment, non-graduate unemployment, and non-graduate employment numbers upon our sample. Our response variables here are the numeric variables: the number of graduate emplyoment, graduate unemplyoment, non-graduate emplyoment, and non-graduate unemployment, grad_median (median earnings for graduate students), and non_grad median (the median earnings for non-graduate students). While our explanatory variable here is going to be the major categories of the students. We are testing whether there is a signficant mean difference in the the number of graduate emplyoment, graduate unemplyoment, non-graduate emplyoment, and non-graduate unemployment in the varying major categories. The graduates are the students in graduate school, and the non-graduates are the students who are not in graduate school (undergrad). 
+
+In running the MANOVA assumptions to test for multivariate normality, since the p-value is smaller than 0.05 for every case in the output, we do NOT MEET THE MULTIVARIATE NORMALITY assumption since we reject the null hypothesis. In testing for the homogenity of the covariances, we also do NOT meet the homogeniety of the covariances seen in the varaince-covariance matrix and by the Box's M test (p value is less then 0.05, meaning we reject the null hypothesis). 
+***Note: I took out the nongrad_unemployed for the multivariate normality assumption test because it was giving my code an error that I could not bypass so I temporarily filtered it out for now and will continue to input it into the dataset later in the next step. 
+
+```{r}
+#MANOVA Assumptions
+# Testing the covarience using variance-covariance matrix
+covmats<-cgs%>%group_by(major_category)%>%do(covs=cov(.[4:7]))
+for(i in 1:15){print(as.character(covmats$major_category[i])); print(covmats$covs[[i]])}
+
+library(rstatix)
+
+group <- cgs$major_category
+DVs <- cgs %>% select(grad_employed, grad_unemployed, nongrad_employed) #taking/filtering out the nongrad_unemployed variable for this assumption step because code would not run with it in! 
+#Test multivariate normality for each group (null: assumption met)
+sapply(split(DVs,group), mshapiro_test)
+
+#Box's M test (null: assumption met)
+box_m(DVs, group)
+
+```
+The null hypothesis is that for all of the dependant/response variables (Grad Employed, Grad Unemployed, Nongrad Employed, and Nongrad Unemployed), the means for each between the different major categories are equal and NOT signficantly different. Since the p-value for the MANOVA test is 3.662e-08, which is smaller than p = 0.05, we can REJECT the null hypothesis. This means that there is a significant difference of means for at least one of the dependent variables between the major categories. This ultimately means that being in a particular major category can impact your employment/unemployment rate and also whether you are a graduate or non-graduate who is employed or unemployed. 
+
+```{r}
+# Performing the MANOVA test
+man1 <- manova(cbind(grad_employed, grad_unemployed, nongrad_employed, nongrad_unemployed)~major_category, data = cgs)
+summary(man1)
+```
+
+For Non-Graduates who are employed and Non-Graduates who are unemployed, the ANOVA test states that there is a mean difference based on their major category. For graduates employed and unemployed, there is not a mean difference based on their major category. This means that the total number of employed and unemployed non-graduate students is influenced by their major categories. This means that there is a significant difference in the mean employment/unemployment rate based on the people's majors. 
+
+```{r}
+#Performing Univariate ANOVA's 
+summary.aov(man1)
+```
+Performing the post-hoc t tests before the Bonferroni adjustment, we can see which means differ within the groups.
+
+For graduate students who are employed, there is a significant mean difference in the employment rate between people who are Business majors & Agriculture & Natural Resources (p=0.032), between people who are Education majors & Agricultural & Natural Resources majors (p=0.039), and between people who are Engineering majors and Business majors (p=0.047). 
+
+For graduate students who are unemployed, there are significant differences between the mean numbers of unemployed people between people who are Business Majors vs people who are Agriculture & Natural Resources Majors (p=0.0031), between Humanities & Liberal Arts majors vs Agricultural & Natural Resources majors (p=0.0307), between Social Science majors vs Agricultural & Natural Resources Arts majors (p=0.0209), between Business majors vs Biology & Life Science majors (p=0.0140), between Business Majors vs Computers & Mathematics majors (p=0.0302), between Business majors vs Engineering Majors (p=0.0044), between Business majors vs Health majors (p=0.0156), between Industrial Arts & Consumer Services majors vs Business majors (p=0.0171), between Physical Science majors vs Business majors (p=0.0273), and between Engineering majors vs Social Science majors (p=0.0448). 
+
+For Non-Graduate students who are employed, there are significant differences between the mean number of people employed between Agricultural & Natural Resources majors vs Business majors, between Art majors vs Business majors, between Business majors vs Biology & Life Sciences majors, between Computers & Mathematics majors vs Business majors, between Business majors vs Education majors, between Business majors vs Engineering majors, between Business majors vs Health majors, between Business majors vs Humanities & Liberal Arts majors, between Business majors vs Industrial Arts & Consumer Services majors, between Business majors vs Law & Public Policy majors, between Business majors vs Physical Sciences majors, between Business majors vs Psychology & Social Work majors, and between Social Science majors vs Business majors. The p-valuesfor all of these comparisons are below p=0.05.
+
+For Non-Graduate students who are unemployed, there is a significant difference in mean unemployment numbers between Business majors vs Agricultures & Natural Resources majors, between Business majors vs Arts majors, between Business majors vs Biology & Life Science majors, between Communications & Journalism majors vs Biology & Life Science majors, between Business majors vs Computers & Mathematics majors, between Business majors vs Education majors, between Business majors vs Engineering majors, between Business majors vs Health majors, between Business majors vs Hunamnities & Liberal Arts majors, between Business majors vs Industrial Arts & Consumer Services majors, between Business majors vs Law & Public Policy majors, between Business majors vs Physical Sciences majors, between Business majors vs Psychology & Social Work majors, and between Business majors vs Social Science majors. The p-values for all of these comparisons are below p=0.05. 
+
+
+```{r}
+# Performing the post-hoc t tests
+pairwise.t.test(cgs$grad_employed, cgs$major_category, p.adj = "none")
+pairwise.t.test(cgs$grad_unemployed, cgs$major_category, p.adj = "none")
+pairwise.t.test(cgs$nongrad_employed, cgs$major_category, p.adj = "none")
+pairwise.t.test(cgs$nongrad_unemployed, cgs$major_category, p.adj = "none")
+```
+
+
+5 tests were performed (one ANOVA and 4 post-hoc t tests), and the probability of calculating at least one type I error is 0.2262191. Adjusting for the bonferroni correction in the post-hoc t-tests, we get a set of different results. 
+
+For non-graduate students who are employed numbers, there is a significant mean difference in the employed number of people with the Bonferonni Correction between Business majors vs Agricultural & Natural Resources majors, between Business majors vs Computers & Mathematics, between Business majors vs Education majors, between Business majors vs Engineering majors, between Business majors vs Humanities & Liberal Arts majors, and between Business majors vs Physical Sciences majors, between Business majors. The p-value is less than 0.05 for all of these comparisons. 
+
+For non-graudate students who are unemployed, there is a significant mean difference in the unemployed number of people with the Bonferonni Correction between Business majors vs Agriculture & Natural Resources majors, between Business majors vs Biology & Life Sciences majors, between Business majors vs Computers & Mathematics, between Business majors vs Education majors, between Business majors vs Engineering majors, between Business majors vs Humanities & Liberal Arts majors, and between Business majors vs Physical Science majors.The p-values for all of these comparisons (taking into account the Bonferroni Correction) is less than 0.05. 
+```{r}
+# Calculating the probability of one type-one error
+type1_error_rate <- 1 - 0.95^5
+type1_error_rate
+bone_level <- 0.05/5
+bone_level
+
+pairwise.t.test(cgs$grad_employed, cgs$major_category, p.adj = "bonferroni")
+pairwise.t.test(cgs$grad_unemployed, cgs$major_category, p.adj = "bonferroni")
+pairwise.t.test(cgs$nongrad_employed, cgs$major_category, p.adj = "bonferroni")
+pairwise.t.test(cgs$nongrad_unemployed, cgs$major_category, p.adj = "bonferroni")
+```
+
+Randomnization Test 
+
+For the randomnization test, I will be comparing the mean number of graduate employments for people who are STEM majors vs people who are in NON-STEM majors. 
+The null hypothesis is that the mean number of graduate employments is the same (no significant difference) between people who are STEM majors and people who are in NON-STEM majors. The alternative hypothesis is that the mean number of graduate emplyoments is signficantly different between people who are STEM majors and people who are NON-STEM majors. 
+The p-valuee is 0.1800 which is smaller than 0.05, and this means that we FAIL to reject the null hypothesis. In conclusion, the mean number of graduate employments is the SAME (no significant difference) between people who are STEM majors and people who are NOT stem majors. 
+```{r}
+#Randominzation Test
+grads_data <- cgs %>% select(is_STEM, grad_employed)
+
+rand_dist <- vector()
+
+#calculating the mean difference 
+grads_data %>% group_by(is_STEM) %>% summarize(mean_num_grad = mean(grad_employed)) %>% summarize(diff(mean_num_grad))
+
+#Randomnization test 
+for(i in 1:5000) {
+  new <- data.frame(grad_employed = sample(grads_data$grad_employed), is_STEM = grads_data$is_STEM)
+  rand_dist[i] <- mean(new[new$is_STEM == TRUE,]$grad_employed) - mean(new[new$is_STEM == FALSE,]$grad_employed)
+}
+
+#calculating the p-value 
+mean(rand_dist>33479.96 | rand_dist < -33479.96)
+
+#histogram of the null distribution & test statistic 
+{hist(rand_dist,main="Null Distribution",ylab="Probability Density/Density"); abline(v = c(-33479.96, 33479.96),col="red")}
+
+
+```
+Part 3 
+
+Linear Regression Model 
+
+The null hypothesis would be that the number of non-graduates who are employed does not explain variation in the number of graduates who get employed and whether they are STEM or NON-STEM majors does not explain variation in the number of graduates who get employed either; the interaction between whether they are a STEM major or NON-STEM major with the number of non-graduates who are employed is not significant either. 
+
+The alternative hypothesis would be that the number of non-graduates who are employed DOES explain variation in the number of graduates who get employed and whether they are STEM or NON-STEM majors DOES explain variation in the number of graduates who get employed; the interaction between whether they are a STEM major or NON-STEM major with the number of non-graduates who are employed IS significant. 
+
+Our dependent/response variable here is going to be the number of graduates who are employed (grad_employed), while our explanatory variables will be whether they are STEM majors (is_STEM) and the number of non-graduates who are employed (nongrad_employed). Here, I am testing to see whether the number of graduate students who are employed are dependent on their majors and on the number of non-graduates who are employed (is there a significant difference in the number of graduate students who can get employed based on the number of non-graduates who are employed as well? Would the fact that non-graduate students that get jobs take away from the jobs available to the graduate students?). 
+
+According to the linear regression model, the predicted number of employed graduate students who are NON-STEM majors is 8.741e4 when the amount of non-graduate students who are employed is at an average amount (Intercept coefficient). For NON-STEM majors, for every 1 non-graduate employed person increase, the number of graduate students employed increase by 3.482e-01 (nongrad_employed_c coefficient). Predicted number of employed graduates who are STEM majors (TRUE) is 2.866e04 number of people higher than for NON-STEM majors at an average number of non-graduate employment rate (is_STEMTRUE coefficient). The slope of the number of non-graduate students employed on the number of graduate students employed is 3.295e-01 greater for STEM majors compared to NON-STEM majors (nongrad_employed_c:is_STEMTRUE coefficient). 
+
+Checking if our data passes the homoskesaticity assumption (equal variances), from the graph, it looks clear that our data VIOLATES this assumption. There is not equal variances within our dataset (homoskedsaticity). Our data also fails the normality assumption of the residuals because the p-value is < 2.2e-16 after running the Shapiro Wilk normality test. The null hypothesis is that our residual distribution is normal, but we REJECT the null hypothesis due to the fact that the p-value is smaller than 0.05. 
+
+Checking if our data passes the linearity assumption, there is sort of a linear relationship when we plot the residuals (positive slope) but definitely not a strong linear relationship. 
+
+Next, I am going to recompute the regression results with robust standard errors (violations of homoskesaticity). We can see that once we corrected our standard errors, the new standard errors are bigger than the uncorrected standard errors due to the fact that we had to correct these standard errors due to the homoskesaticity violation. For NON-STEM majors, for every 1 non-graduate employed person increase, the number of graduate students employed increase by 3.482e-01 (nongrad_employed_c coefficient), and this result is SIGNIFICANT (p=1.947e-05). The other significant result is the Intercept: According to the linear regression model, the predicted number of employed graduate students who are NON-STEM majors is 8.741e4 when the amount of non-graduate students who are employed is at an average amount (Intercept coefficient, p= < 2.2e-16). Before the robust standard error correction, another significant coefficient was "nongrad_employed_c:is_STEMTRUE" (p-value = 1.35e-08), this means that the slope of the number of non-graduate students employed on the number of graduate students employed is 3.295e-01 greater for STEM majors compared to NON-STEM majors and this was significant. After the robust standard error corrections though, this coefficient is no longer signficant (p=0.1755). 
+
+The proportion of the variation in the outcome that my linear regression model explain is 0.6813. (R squared value). My model explains 68.13% of the variation in the outcome!
+
+
+```{r}
+#Mean centering numeric variable within interaction: nongrad_employed 
+cgs$nongrad_employed_c <- cgs$nongrad_employed - mean(cgs$nongrad_employed)
+
+#Linear Regression Model 
+fit<-lm(grad_employed ~ nongrad_employed_c*is_STEM, data=cgs)
+summary(fit)
+
+#plotting the regression using ggplot
+cgs %>% ggplot(aes(nongrad_employed_c, grad_employed, color= is_STEM))+geom_point()+geom_smooth(method = 'lm') + xlab("Non-Graduate Students Employed") + ylab("Graduate Students Employed") +theme_dark() + ggtitle("Linear Regression Graph")
+
+#Checking Assumptions- Homoskesaticity 
+resids<-fit$residuals
+fitvals<-fit$fitted.values
+ggplot()+geom_point(aes(fitvals,resids))+geom_hline(yintercept=0, color='red')
+
+#Checking Asumptions - Normality of Residuals 
+ggplot()+geom_histogram(aes(resids))
+shapiro.test(resids) 
+
+#Checking Assumptions - Linearity 
+qqnorm(resids); qqline(resids, col='red')
+
+#Recompute regression results with robust standard errors
+library(sandwich); library(lmtest)
+summary(fit)$coef[,1:2] #these are the uncorrected standard errors 
+coeftest(fit, vcov = vcovHC(fit)) #these are the corrected standard errors 
+
+#What proportion of the variation in the outcome does my model explain? 
+summary(fit)
+
+(sum((cgs$grad_employed-mean(cgs$grad_employed))^2)-sum(fit$residuals^2))/sum((cgs$grad_employed-mean(cgs$grad_employed))^2) #R^2 value, the propotion of the variation in the outcome that my model explains
+
+
+```
+
+Part 4: Bootstrapping 
+After performing bootstrapped standard errors, we can see that the bootstrapped standard errors are not too different (they are about equal) to the ORIGINAL standard errors. Compared to the robust standard errors, the boostrapped standard error for the intercept is larger, but all of the other robust standard errors are larger than the boostrapped standard errors. The 95% confidence interval is [-1.497503, 2.35446], and this means that we FAIL TO REJECT the null hypothesis because O falls within this interval! The null hypothesis is that the number of non-graduates who are employed does not explain variation in the number of graduates who get employed and whether they are STEM or NON-STEM majors does not explain variation in the number of graduates who get employed either; the interaction between whether they are a STEM major or NON-STEM major with the number of non-graduates who are employed is not significant either. We FAIL to reject this null  hypothesis ultimately - with the robust standard error corrections though, we were able to get a few significant results ultimately (discussed in the previous part). 
+
+```{r}
+#Bootstrapping 
+fit<-lm(grad_employed ~ nongrad_employed_c*is_STEM, data=cgs) 
+resids<-fit$residuals 
+fitted<-fit$fitted.values 
+resid_resamp<-replicate(5000,{
+new_resids<-sample(resids,replace=TRUE) 
+cgs$new_y<-fitted+new_resids 
+fit<-lm(new_y~nongrad_employed_c*is_STEM,data=cgs) 
+coef(fit) 
+})
+
+#resampling the residuals 
+resid_resamp%>%t%>%as.data.frame%>%summarize_all(sd) #bootstrapped standard errors 
+#resid_resamp %>% t %>% as.data.frame %>% summarize(lower = quantile(x, 0.025), upper = quantile(x, 0.975)) - I am coding this out because it kept giving me an error when I was knitting!
+
+
+```
+
+Part 5: Logistic Regression 
+In creating a binary variable, we are coding the number 1 for "TRUE" for the is_STEM variable, and number 0 for "FALSE" for is_STEM variable and putting these under a new column called "STEM_STATUS." The predictor variable/dependent variable is going to be our STEM_STATUS variable (whether the students are STEM majors or NON-STEM majors), and our explanatory variables are going to be grad_employed_fulltime_yearround (number of graduate students who are employed fulltime around the year) and grad_median (median earnings of the graduate students who work fulltime). 
+
+Logistic Regression Model Output: 
+Controlling for grad_median (median earnings of fulltime employed graduate students), for every 1 graduate student fulltime employee increase, odds of being a stem major change/multiplied by a factor of e^-2.704e^-06 = 0.993 (0.7% decrease in odds) (grad_employed_fulltime_yearround coefficient). This result is not significant (p=0.0712). Controlling for grad_employed_fulltime_yearround, for every 1 dollar increase in the graduate median earnings, odds of being a stem major change by a factor of e^7.5247e-05 = 1.052 (5.2% increase in odds) (significant because p-value = 4.832e-08). For grad_median = 0 and for grad_employed_fulltime_yearround = 0, the log-odds of being a stem major is -4.9819e^-09, and the odds of being a stem major is e^(-4.9819) = 0.00686 (significant due to p value = 5.745e^-07). The predicted probability of being a STEM major of grad_median = 0 and grad_employed_fulltime_yearround = 0 is 0.0068133.
+
+Predicting the probabilities of being a STEM major:
+The probability of being a STEM major with a graduate median earning of $75,000 and the number of graduates being employed fulltime year round is 2,701 is 0.006802952. 
+
+Compute and discussing the Accuracy, Sensitivity (TPR), Specificity (TNR), Precision (PPV), and AUC of my model & Generate an ROC curve (plot) and calculate AUC : 
+The accuracy is (44+87)/(172) = 0.76163. The sensitivity, the true positive rate is 87/104 = 0.8365. The specificity, the true negative rate is 44/68 = 0.64706. The precision (PPV), the proportion of classified STEM majors who actually are STEM majors is 87/111 = 0.78378.  The AUC signifies how well we are predicting the STEM major status overall from grad_employed_fulltime_yearround and grad_median and that value is 0.7949661. This AUC can be categorized as a "fair" AUC. From the ROC plot and AUC generated, this means that the ability to predict whether someone was STEM or NON-STEM majors from the total number of graduate employment year round and from the graduate median earnings. 
+
+```{r}
+library(plotROC) 
+
+#creating a binary variable for is_STEM
+cgsnew <- cgs %>% mutate(STEM_STATUS=ifelse(is_STEM=="TRUE",1,0))
+head(cgsnew)
+
+#Logistic Regression Model 
+fit1<-glm(STEM_STATUS~grad_employed_fulltime_yearround + grad_median,data=cgsnew,family=binomial(link="logit"))
+coeftest(fit1)
+
+#Predicted Probability of being a STEM major
+odds2prob<-function(odds){odds/(1+odds)} 
+odds2prob(0.00686) #this is the probability of being a STEM major of grad_median = 0 and grad_employed_fulltime_yearround 
+
+#Probability of being a STEM major with a graduate median earning of $75,000 and the number of graduates being employed fulltime year round is 2,701. 
+stemmajor1<-data.frame(grad_median=75,000,grad_employed_fulltime_yearround=2701)
+predict(fit1,newdata=stemmajor1,type="response")
+
+
+#Confusion Matrix for Logistic Regression 
+cgsnew$prob <- predict(fit1, type = "response")
+table(predict = as.numeric(cgsnew$prob > 0.5 ), truth = cgsnew$STEM_STATUS)%>%addmargins
+
+
+#Compute and discuss the Accuracy, Sensitivity (TPR), Specificity (TNR), Precision (PPV), and AUC of my model
+
+#Sensitivity 
+87/104 
+
+#Specificity 
+44/68
+
+#Precision
+87/111
+
+#Accuracy 
+(44+87)/(172)
+
+#AUC and ROC plot
+#ROC plot
+ROCplot <- ggplot(cgsnew) + geom_roc(aes(d = STEM_STATUS, 
+    m = prob), n.cuts = 0)
+ROCplot
+calc_auc(ROCplot) #calculating AUC
+
+#Density Plot of Logit/Log-Odds
+cgsnew$logit<-predict(fit1,type="link")
+
+cgsnew%>%ggplot()+geom_density(aes(logit,color=is_STEM,fill=is_STEM), alpha=.5)+
+  theme(legend.position=c(.75,.75))+geom_vline(xintercept=0)+xlab("logit (log-odds)")+
+  geom_rug(aes(logit,color=is_STEM)) + ggtitle("Density Plot of Log-Odds")
+
+```
+
+Part 6:  Perform a logistic regression predicting the same binary response variable from ALL of the rest of your variables 
+
+The accuracy in predicitng our STEM_status variable is 0.78488 from grad_employed_fulltime_yearround, grad_median, grad_employed, nongrad_employed, nongrad_employed_fulltime_yearround, nongrad_median, grad_total, and nongrad_total. The sensitivity is 0.86538, the true positive rate of our data. The specificity is 0.661765, the true negative rate of our data. The precision is 0.79646, the proprotion of classified STEM majors who are actually STEM majors. The AUC is 0.8632636, which is a fairly decent AUC. The AUC is an indicator on how well we can predict STEM status majors from these explanatory variables mentioned above. 
+
+
+
+```{r}
+
+fit2<-glm(STEM_STATUS~grad_employed_fulltime_yearround + grad_median + grad_employed + nongrad_employed +nongrad_employed_fulltime_yearround +nongrad_median +grad_total + nongrad_total ,data=cgsnew,family=binomial(link="logit"))
+coeftest(fit2)
+
+#Accuracy, Sensitivity, Specificity, Precision, AUC
+cgsnew$prob2 <- predict(fit2, type = "response")
+table(predict = as.numeric(cgsnew$prob2 > 0.5 ), truth = cgsnew$STEM_STATUS)%>%addmargins
+
+#Accuracy 
+(45+90)/(172)
+
+#Sensitivity 
+90/104
+
+#Specificity 
+45/68
+
+#Precision 
+90/113
+
+#ROC & AUC 
+ROCplot2 <- ggplot(cgsnew) + geom_roc(aes(d = STEM_STATUS, 
+    m = prob2), n.cuts = 0)
+ROCplot
+calc_auc(ROCplot2)
+
+```
+
+Part 6: The AUC is once again calculated here with the class_diag function, and it is the SAME as the previous method that we used. AUC is still 0.8632636. The accuracy, sensitivity, specificity, and precision here are also calculated with the class_diag function, and they are the same results as we have calculated above. The in sample accuracy is 0.7848837, sensitivity is 0.8653846, the specificity is 0.6617647, and the precision is 0.7964602 (these were interpretated above). 
+
+Cross Validation & Out of Class Diagnostics 
+Performing 10-fold cross validation, the out of sample classification diagnostics have an accuracy of 0.71538, a sensitivity of 0.77738, a specificity of 0.591667, a precision of 0.7551, and an AUC of 0.81993. The AUC of the out of class diagnostics is a bit lower than the AUC of the in-sample metrics, but it is still a farily decent AUC. The accuracy, sensitivity, specificity, and precision are all lower in the out of class diagnostics compared to the in-sample metrics that we calculated before. A lower AUC means that we are overfitting our data possibly! 
+
+
+```{r}
+library(knitr)
+opts_chunk$set(fig.align="center", fig.height=5, message=FALSE, warning=FALSE, fig.width=8, tidy.opts=list(width.cutoff=60),tidy=TRUE)
+
+#HERE'S THE CLASSIFICAITON DIAGNOSTICS FUNCTION
+class_diag<-function(probs,truth){
+  tab<-table(factor(probs>.5,levels=c("FALSE","TRUE")),truth)
+  acc=sum(diag(tab))/sum(tab)
+  sens=tab[2,2]/colSums(tab)[2]
+  spec=tab[1,1]/colSums(tab)[1]
+  ppv=tab[2,2]/rowSums(tab)[2]
+  f1=2*(sens*ppv)/(sens+ppv)
+
+  if(is.numeric(truth)==FALSE & is.logical(truth)==FALSE){
+    truth<-as.numeric(truth)-1}
+  
+  ord<-order(probs, decreasing=TRUE)
+  probs <- probs[ord]; truth <- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup<-c(probs[-1]>=probs[-length(probs)], FALSE)
+  TPR<-c(0,TPR[!dup],1); FPR<-c(0,FPR[!dup],1)
+  
+  n <- length(TPR)
+  auc<- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,f1,auc)
+}
+
+#Accuracy, sensitivity, specificity, precision, & AUC
+class_diag(cgsnew$prob2, cgsnew$STEM_STATUS)
+
+
+#K fold - CV 
+set.seed(1234)
+k = 10
+
+data <- cgsnew[sample(nrow(cgsnew)), ]
+folds <- cut(seq(1:nrow(cgsnew)), breaks = k, labels = F)
+
+diags <- NULL
+for (i in 1:k) {
+    cgsnew <- data[folds != i, ]
+    test <- data[folds == i, ]
+    truth <- test$STEM_STATUS
+    
+    fit2 <- glm(STEM_STATUS ~ grad_employed_fulltime_yearround + grad_median + grad_employed + nongrad_employed +nongrad_employed_fulltime_yearround +nongrad_median +grad_total + nongrad_total, data = cgsnew, family = "binomial")
+    
+    probs <- predict(fit2, newdata = test, type = "response")
+    
+    diags <- rbind(diags, class_diag(probs, truth))
+}
+
+summarize_all(diags, mean)
+
+```
+Part 6: Performing LASSO 
+The most predictive variables (the variables that can predict whether the students are STEM majors or NON-STEM majors the most) are grad_median, nongrad_median, and the nongrad_total (these are the only variables that are retained). 
+
+Perform 10-fold CV using only the variables lasso selected & compare model’s out-of-sample AUC to that of your logistic regressions above:
+In performing the 10 fold cross validation using only the variables that LASSO selected, the accuracy is 0.75606, the sensitivity is 0.77857, the specificity is 0.72048, the precision is 0.78857, and the AUC is 0.8082143. Compared to the out-of-sample classification diagnostics above (accuracy of 0.71538, a sensitivity of 0.77738, a specificity of 0.591667, a precision of 0.7551, and an AUC of 0.81993), the 10-fold CV using only the variables lasso selected gave us a bit lower of an AUC, although not by much. There is NOT much of a change at all, so this means that the original model was NOT overfitting that much! The AUC is overall still decent ("fair") by classification. 
+
+
+```{r}
+#Performing LASSO 
+library(glmnet)
+y<-as.matrix(cgsnew$is_STEM) 
+x<-model.matrix(is_STEM~grad_employed_fulltime_yearround + grad_median + grad_employed + nongrad_employed +nongrad_employed_fulltime_yearround +nongrad_median +grad_total + nongrad_total,data=cgsnew)[,-1] 
+head(x)
+
+cv <- cv.glmnet(x,y, family="binomial") 
+cv<-cv.glmnet(x,y,family="binomial")
+lasso<-glmnet(x,y,family="binomial",lambda=cv$lambda.1se)
+coef(lasso)
+
+#Perform 10-fold CV using only the variables lasso selected
+set.seed(1234)
+k=10
+
+data <- cgsnew%>% sample_frac 
+folds <- ntile(1:nrow(data),n=10) 
+
+diags<-NULL
+for(i in 1:k){
+  train <- data[folds!=i,]
+  test <- data[folds==i,] 
+  truth <- test$STEM_STATUS
+  
+  fit3 <- glm(STEM_STATUS~grad_median+nongrad_median+nongrad_total, 
+             data=cgsnew, family="binomial")
+  probs <- predict(fit3, newdata=test, type="response")
+  
+  diags<-rbind(diags,class_diag(probs,truth))
+}
+
+diags%>%summarize_all(mean)
+
+
+```
+
+
+
+
+
+
+
+
